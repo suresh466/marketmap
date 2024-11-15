@@ -2,7 +2,7 @@ services:
   db:
     image: postgres
     volumes:
-      - ~/.local/share/postgres_data/db:/var/lib/postgresql/data
+      - ~/.local/share/postgres_data/marketmap_db:/var/lib/postgresql/data
     ports:
       # exposing the postgresql for local dev
       - "54321:5432"
