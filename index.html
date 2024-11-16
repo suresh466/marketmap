@@ -1,113 +1,60 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Graph Visualization</title>
-        <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-        <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-    <body>
-        <div id="root"></div>
-
-        <script type="text/babel">
-            function GraphVisualization() {
-            const [graphData, setGraphData] = React.useState(null);
-            const [path, setPath] = React.useState(null);
-
-            // Fixed positions for our square layout
-            const nodePositions = {
-                'A': { x: 50, y: 50 },
-                'B': { x: 50, y: 200 },
-                'C': { x: 200, y: 50 },
-                'D': { x: 200, y: 200 }
-            };
-
-            React.useEffect(() => {
-                // Fetch graph data
-                fetch('/graph')
-                    .then(res => res.json())
-                    .then(data => setGraphData(data));
-            }, []);
-
-            const findPath = (start, end) => {
-                fetch(`/shortest-path/${start}/${end}`)
-                    .then(res => res.json())
-                    .then(data => setPath(data.path));
-            };
-
-            if (!graphData) return <div>Loading...</div>;
-
-            return (
-                <div className="p-4">
-                    <div className="mb-4">
-                        <button
-                            onClick={() => findPath('A', 'D')}
-                            className="bg-blue-500 text-white px-4 py-2 rounded">
-                            Find Path from vendor A to vendor D
-                        </button>
-                    </div>
-
-                    <svg width="300" height="300" className="border border-gray-300">
-                        {/* Draw edges */}
-                        {graphData.edges.map((edge, i) => {
-                            const start = nodePositions[edge.source];
-                            const end = nodePositions[edge.target];
-                            const isInPath = path &&
-                                path.includes(edge.source) &&
-                                path.includes(edge.target) &&
-                                Math.abs(path.indexOf(edge.source) - path.indexOf(edge.target)) === 1;
-
-                            return (
-                                <g key={i}>
-                                    <line
-                                        x1={start.x}
-                                        y1={start.y}
-                                        x2={end.x}
-                                        y2={end.y}
-                                        stroke={isInPath ? "red" : "black"}
-                                        strokeWidth={isInPath ? 3 : 1}
-                                    />
-                                    <text
-                                        x={(start.x + end.x) / 2}
-                                        y={(start.y + end.y) / 2}
-                                        dy="-5"
-                                        textAnchor="middle"
-                                        fill="gray"
-                                    >
-                                        d: {edge.weight}
-                                    </text>
-                                </g>
-                            );
-                        })}
-
-                        {/* Draw nodes */}
-                        {graphData.nodes.map((node, i) => (
-                            <g key={i}>
-                                <circle
-                                    cx={nodePositions[node].x}
-                                    cy={nodePositions[node].y}
-                                    r="20"
-                                    fill={path && path.includes(node) ? "lightblue" : "white"}
-                                    stroke="black"
-                                />
-                                <text
-                                    x={nodePositions[node].x}
-                                    y={nodePositions[node].y}
-                                    textAnchor="middle"
-                                    dy=".3em"
-                                    fontSize="14"
-                                >
-                                    {node}
-                                </text>
-                            </g>
-                        ))}
-                    </svg>
-                </div>
-            );
+<head>
+    <title>Graph Visualization with Cytoscape.js</title>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <style>
+        #cy {
+            width: 1200px;
+            height: 800px;
+            border: 1px solid black;
         }
-
-        ReactDOM.render(<GraphVisualization />, document.getElementById('root'));
-        </script>
-    </body>
+    </style>
+</head>
+<body>
+    <div id="cy"></div>
+    <script>
+        fetch('http://localhost:8000/graph')
+            .then(response => response.json())
+            .then(data => {
+                const cy = cytoscape({
+                    container: document.getElementById('cy'),
+                    elements: [
+                        ...data.nodes.map(node => ({
+                            data: { id: node.id },
+                            position: { x: node.x, y: node.y }
+                        })),
+                        ...data.edges.map(edge => ({
+                            data: { id: `${edge.source}-${edge.target}`, source: edge.source, target: edge.target, weight: edge.weight }
+                        }))
+                    ],
+                    style: [
+                        {
+                            selector: 'node',
+                            style: {
+                                'label': 'data(id)',
+                                'background-color': '#69b3a2',
+                                'text-valign': 'center',
+                                'color': '#fff'
+                            }
+                        },
+                        {
+                            selector: 'edge',
+                            style: {
+                                'label': 'data(weight)',
+                                'line-color': '#999',
+                                'target-arrow-color': '#999',
+                                'target-arrow-shape': 'triangle',
+                                'width': 2,
+                                'font-size': 12
+                            }
+                        }
+                    ],
+                    layout: {
+                        name: 'preset'  // Use preset layout to maintain positions defined in the backend
+                    }
+                });
+            });
+    </script>
+</body>
 </html>
