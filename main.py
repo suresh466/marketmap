@@ -1,133 +1,141 @@
+import xml.etree.ElementTree as ET
+from typing import Dict, List
+
 import networkx as nx
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Create our square graph
-G = nx.Graph()
-edges = [
-    ("A", "B", {"weight": 1}),  # Left vertical side
-    ("C", "D", {"weight": 3}),  # Right vertical side
-    ("A", "C", {"weight": 2}),  # Top horizontal side
-    ("B", "D", {"weight": 3}),  # Bottom horizontal side
-]
-G.add_edges_from(edges)
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-@app.get("/", response_class=HTMLResponse)
-async def root():
-    with open("index.html", "r") as f:
-        return f.read()
+def add_geometry_to_graph(G, file_path: str):
+    """Parse GraphML file to extract and add node geometry to graph"""
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+
+    # GraphML uses namespaces, we need to handle them
+    namespaces = {"graphml": "http://graphml.graphdrawing.org/xmlns"}
+
+    # Find all node elements
+    for node in root.findall(".//graphml:node", namespaces):
+        node_id = node.get("id")
+        # Find geometry data (specific to yEd GraphML format)
+        geometry = node.find(
+            ".//y:Geometry", {"y": "http://www.yworks.com/xml/graphml"}
+        )
+        if geometry is not None:
+            width = float(geometry.get("width", 0000))
+            height = float(geometry.get("height", 0000))
+
+            G.nodes[node_id]["width"] = width
+            G.nodes[node_id]["height"] = height
 
 
-@app.get("/graph")
-async def get_graph_data():
-    G = nx.Graph()
+def load_graphml_to_cytoscape(file_path: str) -> Dict:
+    """
+    Load GraphML file and convert to Cytoscape.js format
+    """
+    try:
+        G = nx.read_graphml(file_path).to_undirected()
+        add_geometry_to_graph(G, file_path)
 
-    grid = [
-        [100, 101, 102, 103, 104, 105],  # row_A
-        [200, 201, 202, 203, 204, 205],  # row_B
-        [300, 301, 302, 303, 304, 305],  # row_C
-        [400, 401, 402, 403, 404, 405],  # row_D
-        [500, 501, 502, 503, 504, 505],  # row_E
-        [600, 601, 602, 603, 604, 605],  # row_E
-        [700, 701, 702, 703, 704, 705],  # row_E
-    ]
+        # Convert to Cytoscape.js format
+        elements = {"nodes": [], "edges": []}
 
-    # Get the number of rows and columns
-    rows = len(grid)
-    cols = len(grid[0])
+        # Add nodes with their positions and data
+        for node in G.nodes(data=True):
+            top_y = float(node[1].get("y", 0))
+            node_height = float(node[1].get("height", 0))
+            bottom_y = top_y + node_height
 
-    # Create a list to store the edges with weights
-    edges_with_weights = []
+            left_x = float(node[1].get("x", 0))
+            node_width = float(node[1].get("width", 0))
+            right_x = left_x + node_width
 
-    # Iterate over each node in the grid
-    for i in range(rows):
-        for j in range(cols):
-            current_node = grid[i][j]
+            node_data = {
+                "data": {
+                    "id": str(node[0]),
+                    "label": node[1].get("label", str(node[0])),
+                },
+                "position": {"x": left_x, "y": bottom_y},
+            }
+            elements["nodes"].append(node_data)
 
-            # Check top neighbor (i-1, j)
-            if i > 0:
-                top_node = grid[i - 1][j]
-                edges_with_weights.append((current_node, top_node, 1))
+        # Add edges
+        for edge in G.edges(data=True):
+            edge_data = {
+                "data": {
+                    "id": f"edge_{edge[0]}_{edge[1]}",
+                    "source": str(edge[0]),
+                    "target": str(edge[1]),
+                }
+            }
+            elements["edges"].append(edge_data)
 
-            # Check right neighbor (i, j+1)
-            if j < cols - 1:
-                right_node = grid[i][j + 1]
-                edges_with_weights.append((current_node, right_node, 2))
+        return elements
 
-            # Check bottom neighbor (i+1, j)
-            if i < rows - 1:
-                bottom_node = grid[i + 1][j]
-                edges_with_weights.append((current_node, bottom_node, 1))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-            # Check left neighbor (i, j-1)
-            if j > 0:
-                left_node = grid[i][j - 1]
-                edges_with_weights.append((current_node, left_node, 2))
 
-    print(edges_with_weights)
+def load_booths(file_path: str) -> List:
+    """
+    Load GraphML file and return booths
+    """
+    try:
+        G = nx.read_graphml(file_path).to_undirected()
 
-    G.add_weighted_edges_from(edges_with_weights)
+        booths = []
 
-    # Prepare JSON response
-    edges = [
-        {"source": u, "target": v, "weight": data["weight"]}
-        for u, v, data in G.edges(data=True)
-    ]
+        for node in G.nodes(data=True):
+            booth_data = {
+                "id": str(node[0]),
+                "label": node[1].get("label", str(node[0])),
+            }
+            booths.append(booth_data)
 
-    # Positioning logic that accounts for weights
-    pos = {}
-    start_x, start_y = 100, 100  # Initial position offsets
+        return booths
 
-    # Build positions by iterating and considering weights
-    # 100: j=0, i=0, pos[100] = (100, 100)
-    # 101: j=1, i=0, leftnode = 100, pos[101] = ({100+100*(G[101][100]['weight'])=2==200}=300, 100) [100+(100*2)=300]
-    # 102: j=2, i=0, leftnode = 101, pos[102] = ({300+100*(G[102][101]['weight'])=2==200}=500, 100) [300+(100*2)=500]
-    # 103: j=3, i=0, leftnode = 102, pos[103] = ({500+100*(G[103][102]['weight'])=2==200}=700, 100) [500+(100*2)=700]
-    # 104: j=4, i=0, leftnode = 103, pos[104] = ({700+100*(G[104][103]['weight'])=2==200}=900, 100) [700+(100*2)=900]
-    # 105: j=5, i=0, leftnode = 104, pos[105] = ({900+100*(G[104][103]['weight'])=2==200}=1100, 100) [900+(100*2)=1100]
-    #
-    # 200: j=0, i=1, topnode = 100, pos[200] = (100, {100+100*(G[200][100]['weight'])=1==100}=200) [100+(100*1)=200]
-    # 201: j=1, i=1, leftnode = 200, pos[201] = ({100+100*(G[201][200]['weight'])=2==200}=300, 100) [100+(100*2)=300]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    for i in range(rows):
-        for j in range(cols):
-            current_node = grid[i][j]
-            if j == 0:
-                # Start each row at the initial X offset
-                if i == 0:
-                    pos[current_node] = (start_x, start_y)
-                else:
-                    top_node = grid[i - 1][j]
-                    pos[current_node] = (
-                        pos[top_node][0],
-                        pos[top_node][1] + 100 * G[current_node][top_node]["weight"],
-                    )
-            else:
-                left_node = grid[i][j - 1]
-                pos[current_node] = (
-                    pos[left_node][0] + 100 * G[current_node][left_node]["weight"],
-                    pos[left_node][1],
-                )
 
-    nodes = [{"id": node, "x": pos[node][0], "y": pos[node][1]} for node in G.nodes()]
+@app.get("/")
+async def get_index():
+    """Serve the main HTML page"""
+    with open("static/index.html") as f:
+        html_content = f.read()
+    return HTMLResponse(content=html_content)
 
-    return {"nodes": nodes, "edges": edges}
+
+@app.get("/api/graph")
+async def get_graph():
+    """API endpoint to get the graph data"""
+    try:
+        graph_data = load_graphml_to_cytoscape("flea_market.graphml")
+        return graph_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/booths")
+async def get_booths():
+    """API endpoint to get the booth data"""
+    try:
+        booth_data = load_booths("flea_market.graphml")
+        return booth_data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/shortest-path/{start}/{end}")
 async def get_shortest_path(start: str, end: str):
+    file_path = "flea_market.graphml"
+    G = nx.read_graphml(file_path).to_undirected()
     path = nx.shortest_path(G, start, end, weight="weight")
+
     return {"path": path}
