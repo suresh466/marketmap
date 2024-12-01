@@ -53,8 +53,11 @@
                             'label': 'data(label)',
                             'text-valign': 'center',
                             'text-halign': 'center',
-                            'width': 30,
-                            'height': 30
+                            'width': 'data(width)',
+                            'height': 'data(height)',
+                            'shape': function(ele) {
+                                return ele.data('shape_type') || 'rectangle';
+                            }
                         }
                     },
                     {

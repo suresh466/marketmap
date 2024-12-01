@@ -60,6 +60,9 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
                 "data": {
                     "id": str(node[0]),
                     "label": node[1].get("label", str(node[0])),
+                    "width": node[1].get("width", 30),
+                    "height": node[1].get("height", 30),
+                    "shape_type": node[1].get("shape_type", "rectangle"),
                 },
                 "position": {"x": left_x, "y": bottom_y},
             }
