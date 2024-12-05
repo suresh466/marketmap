@@ -351,7 +351,6 @@
       </data>
     </node>
     <node id="n30">
-      <data key="d6"/>
       <data key="d7">
         <y:ShapeNode>
           <y:Geometry height="133.0" width="90.0" x="555.0" y="599.0"/>
@@ -365,7 +364,7 @@
     <node id="n31">
       <data key="d7">
         <y:ShapeNode>
-          <y:Geometry height="200.0" width="90.0" x="555.0" y="270.0"/>
+          <y:Geometry height="200.0" width="90.0" x="555.0" y="267.0"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" raised="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="20.344114303588867" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="18.064102172851562" x="35.96794891357422" xml:space="preserve" y="89.82794284820557">V1<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>

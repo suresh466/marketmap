@@ -57,11 +57,11 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
         for node in G.nodes(data=True):
             top_y = float(node[1].get("y", 0))
             node_height = float(node[1].get("height", 0))
-            bottom_y = top_y + node_height
+            center_y = top_y + (node_height / 2)
 
             left_x = float(node[1].get("x", 0))
             node_width = float(node[1].get("width", 0))
-            right_x = left_x + node_width
+            center_x = left_x + (node_width / 2)
 
             node_data = {
                 "data": {
@@ -71,7 +71,7 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
                     "height": node[1].get("height", 30),
                     "shape_type": node[1].get("shape_type", "rectangle"),
                 },
-                "position": {"x": left_x, "y": bottom_y},
+                "position": {"x": center_x, "y": center_y},
             }
             elements["nodes"].append(node_data)
 
