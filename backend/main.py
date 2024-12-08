@@ -49,6 +49,15 @@ def add_geometry_to_graph(G, file_path: str):
             G.nodes[node_id]["width"] = width
             G.nodes[node_id]["height"] = height
 
+            # todo: temprary change later
+            # Find name attribute by searching for the data element with attr.name="name"
+            for key in root.findall(".//graphml:key[@attr.name='name']", namespaces):
+                name = node.find(f".//graphml:data[@key='{key.get('id')}']", namespaces)
+                if name is not None:
+                    G.nodes[node_id]["name"] = name.text.strip()
+                else:
+                    G.nodes[node_id]["name"] = "booth"
+
 
 def load_graphml_to_cytoscape(file_path: str) -> Dict:
     """
@@ -77,7 +86,8 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
                     "label": node[1].get("label", str(node[0])),
                     "width": node[1].get("width", 30),
                     "height": node[1].get("height", 30),
-                    "shape_type": node[1].get("shape_type", "rectangle"),
+                    "shape_type": node[1].get("shape_type", "rhomboid"),
+                    "name": node[1].get("name", "no_name"),
                 },
                 "position": {"x": center_x, "y": center_y},
             }
@@ -113,6 +123,8 @@ def load_booths(file_path: str) -> List:
             booth_data = {
                 "id": str(node[0]),
                 "label": node[1].get("label", str(node[0])),
+                "shape_type": node[1].get("shape_type", "rhomboid"),
+                "name": node[1].get("name", "no_name"),
             }
             booths.append(booth_data)
 

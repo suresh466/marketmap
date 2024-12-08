@@ -34,3 +34,9 @@
   target-arrow-color: #f00 !important;
   width: 4 !important;
 }
+
+.node-popup {
+    pointer-events: none;
+    transform: translate(-50%, -100%);
+    margin-top: -10px;
+}
