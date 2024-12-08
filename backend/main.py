@@ -58,6 +58,18 @@ def add_geometry_to_graph(G, file_path: str):
                 else:
                     G.nodes[node_id]["name"] = "booth"
 
+            # add custom category property from the graphml file to the grpah nodes
+            for key in root.findall(
+                ".//graphml:key[@attr.name='category']", namespaces
+            ):  # noqa
+                category = node.find(
+                    f".//graphml:data[@key='{key.get('id')}']", namespaces
+                )
+                if category is not None:
+                    G.nodes[node_id]["category"] = category.text.strip()
+                else:
+                    G.nodes[node_id]["category"] = "no_cat_from_add_geometry"
+
 
 def load_graphml_to_cytoscape(file_path: str) -> Dict:
     """
@@ -88,6 +100,7 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
                     "height": node[1].get("height", 30),
                     "shape_type": node[1].get("shape_type", "rhomboid"),
                     "name": node[1].get("name", "no_name"),
+                    "category": node[1].get("category", "no_cat"),
                 },
                 "position": {"x": center_x, "y": center_y},
             }
@@ -116,6 +129,7 @@ def load_booths(file_path: str) -> List:
     """
     try:
         G = nx.read_graphml(file_path).to_undirected()
+        add_geometry_to_graph(G, file_path)
 
         booths = []
 
@@ -125,6 +139,7 @@ def load_booths(file_path: str) -> List:
                 "label": node[1].get("label", str(node[0])),
                 "shape_type": node[1].get("shape_type", "rhomboid"),
                 "name": node[1].get("name", "no_name"),
+                "category": node[1].get("category", "no_cat"),
             }
             booths.append(booth_data)
 
