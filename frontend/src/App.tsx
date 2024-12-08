@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { BoothList } from "./components/BoothList";
-import { Controls } from "./components/Controls";
 import { Graph } from "./components/Graph";
 import { useGraph } from "./hooks/useGraph";
 import "./styles/Graph.css";
@@ -23,7 +22,6 @@ function App() {
 
 	return (
 		<div className="app">
-			<Controls onFit={() => cy?.fit()} onReset={() => cy?.reset()} />
 			<BoothList onBoothSelect={highlightPath} />
 			<Graph onGraphReady={setCy} />
 		</div>
