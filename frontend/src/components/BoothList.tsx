@@ -19,9 +19,9 @@ export const BoothList = ({ onBoothSelect }: BoothListProps) => {
 			.catch(console.error);
 	}, []);
 
-	const handleBoothClick = async (boothId: string) => {
+	const handleBoothClick = async (boothLabel: string) => {
 		try {
-			const response = await fetch(`/shortest-path/n0/${boothId}`);
+			const response = await fetch(`/shortest-path/GAS/${boothLabel}`);
 			const data = await response.json();
 			onBoothSelect(data.path);
 		} catch (error) {
@@ -33,7 +33,7 @@ export const BoothList = ({ onBoothSelect }: BoothListProps) => {
 		<ul className="booth-list">
 			{booths.map((booth) => (
 				<li key={booth.id}>
-					<a href="#" onClick={() => handleBoothClick(booth.id)}>
+					<a href="#" onClick={() => handleBoothClick(booth.label)}>
 						{booth.label}
 					</a>
 				</li>

@@ -19,6 +19,14 @@ app.add_middleware(
 )
 
 
+# Find a node by its label attribute
+def find_node_by_label(G, target_label):
+    for node, attrs in G.nodes(data=True):
+        if attrs.get("label") == target_label:
+            return node
+    return None
+
+
 def add_geometry_to_graph(G, file_path: str):
     """Parse GraphML file to extract and add node geometry to graph"""
     tree = ET.parse(file_path)
@@ -146,6 +154,9 @@ async def get_booths():
 async def get_shortest_path(start: str, end: str):
     file_path = "flea_market.graphml"
     G = nx.read_graphml(file_path).to_undirected()
-    path = nx.shortest_path(G, start, end, weight="weight")
+
+    start_node = find_node_by_label(G, start)
+    end_node = find_node_by_label(G, end)
+    path = nx.shortest_path(G, start_node, end_node, weight="weight")
 
     return {"path": path}
