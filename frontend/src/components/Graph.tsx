@@ -14,6 +14,7 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 
 		const cy = cytoscape({
 			container: containerRef.current,
+			autoungrabify: true,
 			style: [
 				{
 					selector: "node",
@@ -25,6 +26,11 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 						width: "data(width)",
 						height: "data(height)",
 						shape: (ele) => ele.data("shape_type") || "rectangle",
+						visibility: (ele: cytoscape.NodeSingular) =>
+							ele.data("shape_type") === "ellipse" ||
+							ele.data("shape_type") === "diamond"
+								? "hidden"
+								: "visible",
 					},
 				},
 				{
@@ -33,6 +39,7 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 						width: 2,
 						"line-color": "#999",
 						"curve-style": "bezier",
+						visibility: "hidden",
 					},
 				},
 				{
@@ -41,6 +48,7 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 						"background-color": "#ff0",
 						"line-color": "#f00",
 						"target-arrow-color": "#f00",
+						visibility: "visible",
 					},
 				},
 			],
@@ -48,7 +56,7 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 				name: "preset",
 				fit: true,
 			},
-			wheelSensitivity: 0.2,
+			// wheelSensitivity: 0.2,
 		});
 
 		onGraphReady(cy);

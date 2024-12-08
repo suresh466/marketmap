@@ -150,13 +150,13 @@ async def get_booths():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/shortest-path/{start}/{end}")
-async def get_shortest_path(start: str, end: str):
+@app.get("/shortest-path/{start_label}/{end_label}")
+async def get_shortest_path(start_label: str, end_label: str):
     file_path = "flea_market.graphml"
     G = nx.read_graphml(file_path).to_undirected()
 
-    start_node = find_node_by_label(G, start)
-    end_node = find_node_by_label(G, end)
+    start_node = find_node_by_label(G, start_label)
+    end_node = find_node_by_label(G, end_label)
     path = nx.shortest_path(G, start_node, end_node, weight="weight")
 
     return {"path": path}

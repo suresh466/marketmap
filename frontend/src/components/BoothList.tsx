@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 interface Booth {
 	id: string;
 	label: string;
+	shape_type: string;
 }
 
 interface BoothListProps {
@@ -31,13 +32,18 @@ export const BoothList = ({ onBoothSelect }: BoothListProps) => {
 
 	return (
 		<ul className="booth-list">
-			{booths.map((booth) => (
-				<li key={booth.id}>
-					<a href="#" onClick={() => handleBoothClick(booth.label)}>
-						{booth.label}
-					</a>
-				</li>
-			))}
+			{booths
+				.filter(
+					(booth) =>
+						booth.shape_type !== "diamond" && booth.shape_type !== "ellipse",
+				)
+				.map((booth) => (
+					<li key={booth.id}>
+						<button onClick={() => handleBoothClick(booth.label)}>
+							{booth.label}
+						</button>
+					</li>
+				))}
 		</ul>
 	);
 };
