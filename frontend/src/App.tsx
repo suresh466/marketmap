@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BoothList } from "./components/BoothList";
 import { Graph } from "./components/Graph";
+import { Layout } from "./components/layout/Layout";
 import { useGraph } from "./hooks/useGraph";
 import "./styles/Graph.css";
 
@@ -21,10 +22,14 @@ function App() {
 	}, [cy]);
 
 	return (
-		<div className="app">
-			<BoothList onBoothSelect={highlightPath} />
-			<Graph onGraphReady={setCy} />
-		</div>
+		<Layout>
+			<div className="w-[80%] relative">
+				<Graph onGraphReady={setCy} />
+			</div>
+			<div className="w-[20%] border-l border-gray-200">
+				<BoothList onBoothSelect={highlightPath} />
+			</div>
+		</Layout>
 	);
 }
 

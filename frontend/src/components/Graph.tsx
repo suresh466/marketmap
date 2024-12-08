@@ -6,15 +6,8 @@ interface GraphProps {
 	onGraphReady: (cy: cytoscape.Core) => void;
 }
 
-interface PopupInfo {
-	name: string;
-	x: number;
-	y: number;
-}
-
 export const Graph = ({ onGraphReady }: GraphProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [popup, setPopup] = useState<PopupInfo | null>(null);
 
 	useEffect(() => {
 		if (!containerRef.current) return;
@@ -63,57 +56,28 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 				name: "preset",
 				fit: true,
 			},
-			// wheelSensitivity: 0.2,
 		});
 
-		// Add click handler for nodes
-		cy.on("click", "node", (evt) => {
-			const node = evt.target;
-			console.log("Node data:", node.data()); // This will show all data properties
-			const name = node.data("name");
-			if (name) {
-				const position = evt.renderedPosition;
-				setPopup({
-					name,
-					x: position.x,
-					y: position.y,
-				});
-			}
-		});
-
-		// Click anywhere else to close popup
-		cy.on("click", (evt) => {
-			if (evt.target === cy) {
-				setPopup(null);
-			}
-		});
+		const fitButton = document.createElement("button");
+		fitButton.className =
+			"absolute bottom-4 left-4 p-2 bg-white rounded-full shadow-lg " +
+			"hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500";
+		fitButton.innerHTML = `
+      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0-4h4m-4 4l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+      </svg>
+    `;
+		fitButton.onclick = () => cy.fit();
+		containerRef.current.appendChild(fitButton);
 
 		onGraphReady(cy);
 
 		return () => {
 			cy.destroy();
+			fitButton.remove();
 		};
 	}, [onGraphReady]);
 
-	return (
-		<div ref={containerRef} className="graph-container">
-			{popup && (
-				<div
-					className="node-popup"
-					style={{
-						position: "absolute",
-						left: popup.x,
-						top: popup.y,
-						backgroundColor: "white",
-						padding: "8px",
-						borderRadius: "4px",
-						boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-						zIndex: 1000,
-					}}
-				>
-					{popup.name}
-				</div>
-			)}
-		</div>
-	);
+	return <div ref={containerRef} className="h-full relative graph-container" />;
 };
