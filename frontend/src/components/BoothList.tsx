@@ -69,6 +69,7 @@ export const BoothList = ({ onBoothSelect }: BoothListProps) => {
 				<nav className="flex overflow-x-auto py-2 px-4">
 					{categories.map((category) => (
 						<button
+							type="button"
 							key={category}
 							onClick={() => setSelectedCategory(category)}
 							className={`whitespace-nowrap px-3 py-2 text-sm font-medium rounded-md
@@ -101,6 +102,7 @@ export const BoothList = ({ onBoothSelect }: BoothListProps) => {
 								}`}
 							>
 								<button
+									type="button"
 									onClick={() => handleBoothClick(booth.label)}
 									className={`w-full px-4 py-3 text-left
                            focus:outline-none focus:bg-blue-50

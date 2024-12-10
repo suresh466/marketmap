@@ -1,4 +1,4 @@
-import cytoscape from "cytoscape";
+import type cytoscape from "cytoscape";
 import { useCallback, useState } from "react";
 
 export const useGraph = () => {
@@ -17,7 +17,7 @@ export const useGraph = () => {
 
 				(edge.length ? edge : reverseEdge).addClass("highlighted");
 			}
-
+			// highlight the last node
 			cy.getElementById(path[path.length - 1]).addClass("highlighted");
 		},
 		[cy],
