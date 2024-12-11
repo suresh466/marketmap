@@ -58,24 +58,10 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 			},
 		});
 
-		const fitButton = document.createElement("button");
-		fitButton.className =
-			"absolute bottom-4 left-4 p-2 bg-white rounded-full shadow-lg " +
-			"hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500";
-		fitButton.innerHTML = `
-      <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0-4h4m-4 4l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-      </svg>
-    `;
-		fitButton.onclick = () => cy.fit();
-		containerRef.current.appendChild(fitButton);
-
 		onGraphReady(cy);
 
 		return () => {
 			cy.destroy();
-			fitButton.remove();
 		};
 	}, [onGraphReady]);
 
