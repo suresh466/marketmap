@@ -5,7 +5,8 @@ import networkx as nx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
+
+FILE = "flea_market.graphml"
 
 app = FastAPI()
 
@@ -19,6 +20,52 @@ app.add_middleware(
 )
 
 
+def prepare_graph(file_path: str):
+    G = nx.read_graphml(file_path).to_undirected()
+
+    apply_default_attributes(G)
+    for node in G.nodes(data=True):
+        print(node)
+    add_node_dimensions(G, file_path)
+
+    return G
+
+
+def add_node_dimensions(G, file_path: str):
+    """Parse GraphML file to extract and add node height and width to graph"""
+
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+
+    namespaces = {"graphml": "http://graphml.graphdrawing.org/xmlns"}
+
+    # Find all node elements
+    for node in root.findall(".//graphml:node", namespaces):
+        node_id = node.get("id")
+        geometry = node.find(
+            ".//y:Geometry", {"y": "http://www.yworks.com/xml/graphml"}
+        )
+        if geometry is not None:
+            width = float(geometry.get("width", 30.0))
+            height = float(geometry.get("height", 30.0))
+
+            G.nodes[node_id]["width"] = width
+            G.nodes[node_id]["height"] = height
+
+
+def apply_default_attributes(G):
+    node_default = G.graph["node_default"]
+    edge_default = G.graph["edge_default"]
+
+    for node in G.nodes():
+        attrs = node_default | G.nodes[node]
+        nx.set_node_attributes(G, {node: attrs})
+
+    for u, v in G.edges():
+        attrs = edge_default | G.edges[u, v]
+        nx.set_edge_attributes(G, {(u, v): attrs})
+
+
 # Find a node by its label attribute
 def find_node_by_label(G, target_label):
     for node, attrs in G.nodes(data=True):
@@ -27,57 +74,12 @@ def find_node_by_label(G, target_label):
     return None
 
 
-def add_geometry_to_graph(G, file_path: str):
-    """Parse GraphML file to extract and add node geometry to graph"""
-    tree = ET.parse(file_path)
-    root = tree.getroot()
-
-    # GraphML uses namespaces, we need to handle them
-    namespaces = {"graphml": "http://graphml.graphdrawing.org/xmlns"}
-
-    # Find all node elements
-    for node in root.findall(".//graphml:node", namespaces):
-        node_id = node.get("id")
-        # Find geometry data (specific to yEd GraphML format)
-        geometry = node.find(
-            ".//y:Geometry", {"y": "http://www.yworks.com/xml/graphml"}
-        )
-        if geometry is not None:
-            width = float(geometry.get("width", 0000))
-            height = float(geometry.get("height", 0000))
-
-            G.nodes[node_id]["width"] = width
-            G.nodes[node_id]["height"] = height
-
-            # todo: temprary change later
-            # Find name attribute by searching for the data element with attr.name="name"
-            for key in root.findall(".//graphml:key[@attr.name='name']", namespaces):
-                name = node.find(f".//graphml:data[@key='{key.get('id')}']", namespaces)
-                if name is not None:
-                    G.nodes[node_id]["name"] = name.text.strip()
-                else:
-                    G.nodes[node_id]["name"] = "booth"
-
-            # add custom category property from the graphml file to the grpah nodes
-            for key in root.findall(
-                ".//graphml:key[@attr.name='category']", namespaces
-            ):  # noqa
-                category = node.find(
-                    f".//graphml:data[@key='{key.get('id')}']", namespaces
-                )
-                if category is not None:
-                    G.nodes[node_id]["category"] = category.text.strip()
-                else:
-                    G.nodes[node_id]["category"] = "no_cat_from_add_geometry"
-
-
 def load_graphml_to_cytoscape(file_path: str) -> Dict:
     """
     Load GraphML file and convert to Cytoscape.js format
     """
     try:
-        G = nx.read_graphml(file_path).to_undirected()
-        add_geometry_to_graph(G, file_path)
+        G = prepare_graph(file_path)
 
         # Convert to Cytoscape.js format
         elements = {"nodes": [], "edges": []}
@@ -128,23 +130,13 @@ def load_booths(file_path: str) -> List:
     Load GraphML file and return booths
     """
     try:
-        G = nx.read_graphml(file_path).to_undirected()
-        add_geometry_to_graph(G, file_path)
+        G = prepare_graph(file_path)
+        booths = [
+            {"id": str(node_id), **attrs} for node_id, attrs in G.nodes(data=True)
+        ]
 
-        booths = []
-
-        for node in G.nodes(data=True):
-            booth_data = {
-                "id": str(node[0]),
-                "label": node[1].get("label", str(node[0])),
-                "shape_type": node[1].get("shape_type", "rhomboid"),
-                "name": node[1].get("name", "no_name"),
-                "category": node[1].get("category", "no_cat"),
-            }
-            booths.append(booth_data)
-
+        print(booths)
         return booths
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -161,7 +153,7 @@ async def get_index():
 async def get_graph():
     """API endpoint to get the graph data"""
     try:
-        graph_data = load_graphml_to_cytoscape("flea_market.graphml")
+        graph_data = load_graphml_to_cytoscape(FILE)
         return graph_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -171,7 +163,7 @@ async def get_graph():
 async def get_booths():
     """API endpoint to get the booth data"""
     try:
-        booth_data = load_booths("flea_market.graphml")
+        booth_data = load_booths(FILE)
         return booth_data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -179,8 +171,7 @@ async def get_booths():
 
 @app.get("/shortest-path/{start_label}/{end_label}")
 async def get_shortest_path(start_label: str, end_label: str):
-    file_path = "flea_market.graphml"
-    G = nx.read_graphml(file_path).to_undirected()
+    G = prepare_graph(FILE)
 
     start_node = find_node_by_label(G, start_label)
     end_node = find_node_by_label(G, end_label)
