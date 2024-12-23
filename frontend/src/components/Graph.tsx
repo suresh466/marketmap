@@ -28,7 +28,8 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 						shape: (ele) => ele.data("shape_type") || "rectangle",
 						visibility: (ele: cytoscape.NodeSingular) =>
 							ele.data("shape_type") === "ellipse" ||
-							ele.data("shape_type") === "diamond"
+							ele.data("shape_type") === "diamond" ||
+							ele.data("shape_type") === "octagon"
 								? "hidden"
 								: "visible",
 					},
@@ -38,8 +39,9 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 					style: {
 						width: 2,
 						"line-color": "#999",
-						"curve-style": "bezier",
-						visibility: "hidden",
+						"curve-style": "round-taxi",
+						"source-endpoint": "inside-to-node",
+						"target-endpoint": "inside-to-node",
 					},
 				},
 				{
