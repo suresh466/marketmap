@@ -24,8 +24,6 @@ def prepare_graph(file_path: str):
     G = nx.read_graphml(file_path).to_undirected()
 
     apply_default_attributes(G)
-    for node in G.nodes(data=True):
-        print(node)
     add_node_dimensions(G, file_path)
 
     return G
@@ -57,12 +55,26 @@ def apply_default_attributes(G):
     node_default = G.graph["node_default"]
     edge_default = G.graph["edge_default"]
 
+    # Find all pairs of nodes with multiple edges
+    multi_edges = []
+    for u, v in G.edges():
+        if G.number_of_edges(u, v) > 1:
+            multi_edges.append((u, v))
+
+    if multi_edges:
+        for u, v in multi_edges:
+            print(f"Nodes {u}, {v} have {G.number_of_edges(u, v)} edges between them\n")
+        raise ValueError(
+            "Multiple edges detected between nodes, multiple edges not supported"
+        )
+
     for node in G.nodes():
         attrs = node_default | G.nodes[node]
         nx.set_node_attributes(G, {node: attrs})
 
     for u, v in G.edges():
-        attrs = edge_default | G.edges[u, v]
+        edge_attrs = G.edges[u, v]
+        attrs = edge_default | edge_attrs
         nx.set_edge_attributes(G, {(u, v): attrs})
 
 
@@ -135,7 +147,6 @@ def load_booths(file_path: str) -> List:
             {"id": str(node_id), **attrs} for node_id, attrs in G.nodes(data=True)
         ]
 
-        print(booths)
         return booths
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
