@@ -42,6 +42,7 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 						"curve-style": "round-taxi",
 						"source-endpoint": "inside-to-node",
 						"target-endpoint": "inside-to-node",
+						visibility: "hidden",
 					},
 				},
 				{

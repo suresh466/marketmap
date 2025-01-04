@@ -34,7 +34,7 @@ function App() {
 				<FitViewButton onFitView={handleFitView} />
 			</div>
 			<div className="w-[20%] border-l border-gray-200">
-				<BoothList onBoothSelect={highlightPath} />
+				<BoothList onPathFind={highlightPath} />
 			</div>
 		</Layout>
 	);
