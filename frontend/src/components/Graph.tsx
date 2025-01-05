@@ -15,6 +15,9 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 		const cy = cytoscape({
 			container: containerRef.current,
 			autoungrabify: true,
+			minZoom: 0.2,
+			maxZoom: 2,
+			wheelSensitivity: 0.1,
 			style: [
 				{
 					selector: "node",
