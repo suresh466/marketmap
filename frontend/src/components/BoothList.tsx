@@ -8,11 +8,11 @@ interface Booth {
 }
 
 interface BoothListProps {
+	booths: Booth[];
 	onPathFind: (path: string[]) => void;
 }
 
-export const BoothList = ({ onPathFind }: BoothListProps) => {
-	const [booths, setBooths] = useState<Booth[]>([]);
+export const BoothList = ({ booths, onPathFind }: BoothListProps) => {
 	const [originSearchTerm, setOriginSearchTerm] = useState("");
 	const [destSearchTerm, setDestSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("All");
@@ -25,13 +25,6 @@ export const BoothList = ({ onPathFind }: BoothListProps) => {
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
 		"origin",
 	);
-
-	useEffect(() => {
-		fetch("/api/booths")
-			.then((response) => response.json())
-			.then(setBooths)
-			.catch(console.error);
-	}, []);
 
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
