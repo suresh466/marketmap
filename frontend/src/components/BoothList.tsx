@@ -42,16 +42,38 @@ export const BoothList = ({ booths, onPathFind }: BoothListProps) => {
 	};
 
 	useEffect(() => {
+		if (!originSearchTerm || !destSearchTerm) {
+			if (!originSearchTerm) setSelectedOriginBooth(null);
+			if (!destSearchTerm) setSelectedDestBooth(null);
+			onPathFind([]);
+			return;
+		}
+
 		if (selectedOriginBooth && selectedDestBooth) {
-			fetch(`/shortest-path/${selectedOriginBooth}/${selectedDestBooth}`)
+			const controller = new AbortController();
+
+			fetch(`/shortest-path/${selectedOriginBooth}/${selectedDestBooth}`, {
+				signal: controller.signal,
+			})
 				.then((response) => response.json())
 				.then((data) => onPathFind(data.path))
 				.catch((error) => {
-					console.error("Error fetching path:", error);
-					setSelectedDestBooth(null);
+					if (error.name !== "AbortError") {
+						console.error("Error fetching path:", error);
+						setSelectedDestBooth(null);
+						onPathFind([]);
+					}
 				});
+
+			return () => controller.abort();
 		}
-	}, [selectedOriginBooth, selectedDestBooth, onPathFind]);
+	}, [
+		selectedOriginBooth,
+		selectedDestBooth,
+		onPathFind,
+		originSearchTerm,
+		destSearchTerm,
+	]);
 
 	const categories = [
 		"All",
