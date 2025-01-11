@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 interface Booth {
 	id: string;
@@ -10,9 +11,16 @@ interface Booth {
 interface BoothListProps {
 	booths: Booth[];
 	onPathFind: (path: string[]) => void;
+	shouldReset: boolean;
+	onReset: Dispatch<SetStateAction<boolean>>;
 }
 
-export const BoothList = ({ booths, onPathFind }: BoothListProps) => {
+export const BoothList = ({
+	booths,
+	onPathFind,
+	shouldReset,
+	onReset,
+}: BoothListProps) => {
 	const [originSearchTerm, setOriginSearchTerm] = useState("");
 	const [destSearchTerm, setDestSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("All");
@@ -40,6 +48,14 @@ export const BoothList = ({ booths, onPathFind }: BoothListProps) => {
 			`selectedOriginBooth: ${selectedOriginBooth} selecteddestbooth: ${selectedDestBooth}`,
 		);
 	};
+
+	useEffect(() => {
+		if (shouldReset) {
+			setOriginSearchTerm("");
+			setDestSearchTerm("");
+			onReset(false);
+		}
+	}, [shouldReset, onReset]);
 
 	useEffect(() => {
 		if (!originSearchTerm || !destSearchTerm) {
