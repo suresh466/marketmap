@@ -9,18 +9,26 @@ export const CategoryButtons = ({
 	selectedCategory,
 	onCategoryChange,
 }: CategoryButtonsProps) => {
+	console.log(selectedCategory);
 	return (
-		<div className="absolute top-4 right-4 z-10 flex flex-col gap-4">
+		<div className="flex flex-wrap gap-2">
 			{categories.map((category) => (
 				<button
 					key={category}
 					type="button"
 					onClick={() => onCategoryChange(category)}
-					className={`text-gray-700 text-xs font-medium py-1.5 px-4 rounded-lg shadow-sm border border-gray-200 transition-all duration-200 ease-in-out ${
-						selectedCategory === category
-							? "bg-blue-500 text-white hover:bg-blue-600 border-blue-600"
-							: "bg-white hover:bg-gray-50 hover:border-gray-300"
-					}`}
+					className={`
+                px-4 py-2
+                text-sm font-medium
+                rounded-lg
+                transition-all duration-200 ease-in-out
+                focus:outline-none focus:ring-2 focus:ring-offset-2
+                ${
+									selectedCategory.toLowerCase() === category.toLowerCase()
+										? "bg-amber-500 text-white hover:bg-amber-600 focus:ring-amber-500"
+										: "bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 hover:border-gray-300 focus:ring-gray-500"
+								}
+                `}
 				>
 					{category}
 				</button>

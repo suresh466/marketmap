@@ -4,11 +4,11 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
 	return (
-		<div className="h-screen flex flex-col">
-			<header className="bg-white border-b border-gray-200">
-				<div className="px-4 py-3">
-					<h1 className="text-2xl font-bold">Hwy 404 and Steels Flea Market</h1>
-				</div>
+		<div className="h-screen flex flex-col bg-amber-50/30">
+			<header className="bg-white border-b border-amber-100 px-6 py-4 shadow-sm">
+				<h1 className="text-2xl font-semibold text-gray-800 text-center">
+					Hwy 404 and Steeles Flea Market
+				</h1>
 			</header>
 			<main className="flex-1 flex overflow-hidden">{children}</main>
 		</div>

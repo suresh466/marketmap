@@ -133,9 +133,9 @@ export const BoothList = ({
 	);
 
 	return (
-		<div className="h-full flex flex-col">
+		<div className="h-full flex flex-col bg-white">
 			{/* Origin Search Input */}
-			<div className="p-4 border-b border-gray-200">
+			<div className="p-4 border-b border-gray-100">
 				<input
 					ref={originInputRef}
 					type="search"
@@ -143,41 +143,54 @@ export const BoothList = ({
 					value={originSearchTerm}
 					onChange={(e) => setOriginSearchTerm(e.target.value)}
 					onFocus={() => setActiveSearchBox("origin")}
-					className="w-full px-3 py-2 border border-gray-300 rounded-lg
-            focus:outline-none focus:ring-2 focus:ring-blue-500
-            focus:border-transparent"
+					className="w-full px-4 py-2.5
+            bg-gray-50
+            border border-gray-200
+            rounded-lg
+            text-gray-700 placeholder-gray-400
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
+            focus:bg-white"
 				/>
 			</div>
 
 			{/* Destination Search Input */}
-			<div className="p-4 border-b border-gray-200">
+			<div className="p-4 border-b border-gray-100">
 				<input
 					type="search"
 					placeholder="Search Destination"
 					value={destSearchTerm}
 					onChange={(e) => setDestSearchTerm(e.target.value)}
 					onFocus={() => setActiveSearchBox("dest")}
-					className="w-full px-3 py-2 border border-gray-300 rounded-lg
-            focus:outline-none focus:ring-2 focus:ring-blue-500
-            focus:border-transparent"
+					className="w-full px-4 py-2.5
+            bg-gray-50
+            border border-gray-200
+            rounded-lg
+            text-gray-700 placeholder-gray-400
+            transition-all duration-200
+            focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
+            focus:bg-white"
 				/>
 			</div>
 
 			{/* Category Tabs */}
-			<div className="border-b border-gray-200">
-				<nav className="flex overflow-x-auto py-2 px-4">
+			<div className="border-b border-gray-100">
+				<nav className="flex overflow-x-auto py-2 px-4 gap-2">
 					{categories.map((category) => (
 						<button
 							type="button"
 							key={category}
 							onClick={() => setSelectedCategory(category)}
-							className={`whitespace-nowrap px-3 py-2 text-sm font-medium rounded-md
-                    mr-2 last:mr-0 transition-colors duration-150
+							className={`
+                    whitespace-nowrap px-3 py-1.5
+                    text-sm font-medium rounded-full
+                    transition-all duration-200
                     ${
 											selectedCategory === category
-												? "bg-blue-100 text-blue-700"
-												: "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-										}`}
+												? "bg-amber-500 text-white"
+												: "bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+										}
+                    `}
 						>
 							{category}
 						</button>
@@ -186,39 +199,51 @@ export const BoothList = ({
 			</div>
 
 			{/* Booth List */}
-			<div className="flex-1 overflow-y-auto">
+			<div className="flex-1 overflow-y-auto scroll-smooth">
 				{filteredBooths.length === 0 ? (
-					<div className="text-center p-4 text-gray-500">No booths found</div>
+					<div className="flex flex-col items-center justify-center h-full text-gray-500 p-8">
+						<span className="text-lg">No booths found</span>
+						<span className="text-sm mt-1">Try adjusting your search</span>
+					</div>
 				) : (
-					<ul className="divide-y divide-gray-200">
+					<ul className="divide-y divide-gray-100">
 						{filteredBooths.map((booth) => (
-							<li
-								key={booth.id}
-								className={`transition-colors duration-150 ${
-									selectedDestBooth === booth.label
-										? "bg-blue-50"
-										: "hover:bg-gray-50"
-								}`}
-							>
+							<li key={booth.id} className="transition-colors duration-200">
 								<button
 									type="button"
 									onClick={() => handleBoothClick(booth.label)}
-									className={`w-full px-4 py-3 text-left
-                    focus:outline-none focus:bg-blue-50
-                    active:bg-blue-100 transition-colors duration-150
+									className={`
+                    w-full px-4 py-3 text-left
+                    transition-all duration-200
+                    hover:bg-amber-50
                     ${
 											selectedDestBooth === booth.label
-												? "text-blue-700"
-												: "text-gray-700"
-										}`}
+												? "bg-amber-50"
+												: "bg-white"
+										}
+                    `}
 								>
-									<div className="font-medium">{booth.label}</div>
 									<div
-										className={`text-sm ${
-											selectedDestBooth === booth.label
-												? "text-blue-500"
-												: "text-gray-500"
-										}`}
+										className={`
+                        font-medium
+                        ${
+													selectedDestBooth === booth.label
+														? "text-amber-900"
+														: "text-gray-900"
+												}
+                        `}
+									>
+										{booth.label}
+									</div>
+									<div
+										className={`
+                            text-sm
+                            ${
+															selectedDestBooth === booth.label
+																? "text-amber-700"
+																: "text-gray-500"
+														}
+                            `}
 									>
 										{booth.category}
 									</div>

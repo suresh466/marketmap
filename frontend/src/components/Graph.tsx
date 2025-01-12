@@ -130,36 +130,66 @@ export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 
 	return (
 		<div className="relative h-full">
-			<div ref={containerRef} className="h-full relative graph-container" />
+			{/* Graph container */}
+			<div
+				ref={containerRef}
+				className="h-full relative graph-container bg-gray-50/30"
+			/>
 
+			{/* Node popup */}
 			{popupData && (
 				<div
-					className="absolute z-50 bg-white rounded-lg shadow-xl p-4 border border-gray-200"
+					className="absolute z-50 bg-white rounded-xl shadow-lg p-5 border border-gray-100 w-64"
 					style={{
 						left: `${popupData.position.x}px`,
 						top: `${popupData.position.y}px`,
 						transform: popupData.transform,
 					}}
 				>
+					{/* Close button */}
 					<button
 						type="button"
 						onClick={() => setPopupData(null)}
-						className="absolute -top-2 -right-2 bg-gray-100 hover:bg-gray-200 rounded-full p-1"
+						className="absolute -top-2 -right-2 bg-white hover:bg-gray-50 rounded-full p-1.5 shadow-sm border border-gray-100 transition-colors"
 						aria-label="Close popup"
 					>
-						<FontAwesomeIcon icon={faXmark} className="w-4 h-4 text-gray-500" />
+						<FontAwesomeIcon
+							icon={faXmark}
+							className="w-3.5 h-3.5 text-gray-400"
+						/>
 					</button>
 
-					<div className="space-y-2">
-						<h3 className="font-medium text-gray-900">{popupData.label}</h3>
-						<div className="text-sm text-gray-500">
-							<p>Type: {popupData.shape_type}</p>
-							<p>ID: {popupData.id}</p>
-							<p>Dimension: {popupData.dimension}</p>
-							<p>CAT: {popupData.category}</p>
+					<div className="space-y-3">
+						{/* Booth name */}
+						<h3 className="font-semibold text-gray-900 text-lg">
+							{popupData.label}
+						</h3>
+
+						{/* Booth details */}
+						<div className="space-y-2 text-sm">
+							<div className="flex items-center justify-between text-gray-600">
+								<span>Type:</span>
+								<span className="font-medium">{popupData.shape_type}</span>
+							</div>
+							<div className="flex items-center justify-between text-gray-600">
+								<span>ID:</span>
+								<span className="font-medium">{popupData.id}</span>
+							</div>
+							<div className="flex items-center justify-between text-gray-600">
+								<span>Dimension:</span>
+								<span className="font-medium">{popupData.dimension}</span>
+							</div>
+							<div className="flex items-center justify-between text-gray-600">
+								<span>Category:</span>
+								<span className="font-medium">{popupData.category}</span>
+							</div>
+
+							{/* Get directions button */}
 							<button
 								type="button"
-								className="bg-sky-600 p-2 rounded-lg text-white hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 mt-1"
+								className="w-full mt-3 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg
+            transition-colors duration-200 font-medium text-sm
+            focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 								onClick={() => {
 									setPopupData(null);
 									onGetDirection(popupData.label);

@@ -19,7 +19,7 @@ interface Booth {
 function App() {
 	const { cy, setCy, highlightPath } = useGraph();
 	const [booths, setBooths] = useState<Booth[]>([]);
-	const [selectedCategory, setSelectedCategory] = useState<string>("all");
+	const [selectedCategory, setSelectedCategory] = useState<string>("All");
 	const [shouldReset, setShouldReset] = useState<boolean>(false);
 	const [directionBooth, setDirectionBooth] = useState<string | "">("");
 	const [pathTimeout, setPathTimeout] = useState<number | null>(null);
@@ -71,20 +71,38 @@ function App() {
 
 	return (
 		<Layout>
-			<div className="w-[80%] relative">
-				<Graph onGraphReady={setCy} onGetDirection={handleGetDirection} />
-				<CategoryButtons
-					categories={categories}
-					selectedCategory={selectedCategory}
-					onCategoryChange={handleCategoryChange}
-				/>
-				<PathResetButton
-					onPathReset={handlePathReset}
-					pathTimeout={pathTimeout}
-				/>
-				<FitViewButton onFitView={handleFitView} />
+			{/* Main content area - Graph section */}
+			<div className="w-[80%] relative bg-white">
+				<div className="h-full p-6">
+					<Graph onGraphReady={setCy} onGetDirection={handleGetDirection} />
+
+					{/* Controls container */}
+					<div className="absolute bottom-6 left-6 right-6 bg-white/1 backdrop-blur-sm rounded-lg shadow-md border border-gray-100 p-4">
+						<div className="flex justify-between items-center">
+							{/* Category filters */}
+							<div className="flex-1">
+								<CategoryButtons
+									categories={categories}
+									selectedCategory={selectedCategory}
+									onCategoryChange={handleCategoryChange}
+								/>
+							</div>
+
+							{/* Action buttons */}
+							<div className="flex space-x-3">
+								<PathResetButton
+									onPathReset={handlePathReset}
+									pathTimeout={pathTimeout}
+								/>
+								<FitViewButton onFitView={handleFitView} />
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-			<div className="w-[20%] border-l border-gray-200">
+
+			{/* Sidebar - Booth list */}
+			<div className="w-[20%] border-l border-gray-100 bg-white shadow-inner">
 				<BoothList
 					booths={filteredBooths}
 					onPathFind={highlightPath}
