@@ -42,11 +42,6 @@ export const BoothList = ({
 			setSelectedDestBooth(boothLabel);
 			setDestSearchTerm(boothLabel);
 		}
-
-		console.log(`selected searchbox: ${activeSearchBox}`);
-		console.log(
-			`selectedOriginBooth: ${selectedOriginBooth} selecteddestbooth: ${selectedDestBooth}`,
-		);
 	};
 
 	useEffect(() => {
