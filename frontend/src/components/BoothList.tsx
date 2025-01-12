@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 interface Booth {
@@ -13,6 +13,8 @@ interface BoothListProps {
 	onPathFind: (path: string[]) => void;
 	shouldReset: boolean;
 	onReset: Dispatch<SetStateAction<boolean>>;
+	directionBooth: string;
+	onDirectionBooth: Dispatch<SetStateAction<string>>;
 }
 
 export const BoothList = ({
@@ -20,6 +22,8 @@ export const BoothList = ({
 	onPathFind,
 	shouldReset,
 	onReset,
+	directionBooth,
+	onDirectionBooth,
 }: BoothListProps) => {
 	const [originSearchTerm, setOriginSearchTerm] = useState("");
 	const [destSearchTerm, setDestSearchTerm] = useState("");
@@ -34,6 +38,8 @@ export const BoothList = ({
 		"origin",
 	);
 
+	const originInputRef = useRef<HTMLInputElement>(null);
+
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
 			setSelectedOriginBooth(boothLabel);
@@ -43,6 +49,17 @@ export const BoothList = ({
 			setDestSearchTerm(boothLabel);
 		}
 	};
+
+	useEffect(() => {
+		if (directionBooth) {
+			setSelectedDestBooth(directionBooth);
+			setDestSearchTerm(directionBooth);
+			if (!selectedOriginBooth) {
+				originInputRef.current?.focus();
+			}
+			onDirectionBooth("");
+		}
+	}, [directionBooth, onDirectionBooth, selectedOriginBooth]);
 
 	useEffect(() => {
 		if (shouldReset) {
@@ -111,6 +128,7 @@ export const BoothList = ({
 			{/* Origin Search Input */}
 			<div className="p-4 border-b border-gray-200">
 				<input
+					ref={originInputRef}
 					type="search"
 					placeholder="Search Origin"
 					value={originSearchTerm}

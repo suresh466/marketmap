@@ -16,9 +16,10 @@ interface NodePopupData {
 
 interface GraphProps {
 	onGraphReady: (cy: cytoscape.Core) => void;
+	onGetDirection: (booth: string) => void;
 }
 
-export const Graph = ({ onGraphReady }: GraphProps) => {
+export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [popupData, setPopupData] = useState<NodePopupData | null>(null);
 
@@ -84,14 +85,14 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 
 			let transform = "translate(-50%, -120%)";
 
-			if (x > viewportWidth - 200) {
+			if (x > viewportWidth - 250) {
 				transform = "translate(-100%, -50%)";
-			} else if (x < 200) {
+			} else if (x < 250) {
 				transform = "translate(0%, -50%)";
 			}
-			if (y > viewportHeight - 200) {
+			if (y > viewportHeight - 250) {
 				transform = "translate(-50%, -100%)";
-			} else if (y < 200) {
+			} else if (y < 250) {
 				transform = "translate(-50%, 0%)";
 			}
 
@@ -156,6 +157,16 @@ export const Graph = ({ onGraphReady }: GraphProps) => {
 							<p>ID: {popupData.id}</p>
 							<p>Dimension: {popupData.dimension}</p>
 							<p>CAT: {popupData.category}</p>
+							<button
+								type="button"
+								className="bg-sky-600 p-2 rounded-lg text-white hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 mt-1"
+								onClick={() => {
+									setPopupData(null);
+									onGetDirection(popupData.label);
+								}}
+							>
+								Get Directions
+							</button>
 						</div>
 					</div>
 				</div>

@@ -21,6 +21,7 @@ function App() {
 	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const [shouldReset, setShouldReset] = useState<boolean>(false);
+	const [directionBooth, setDirectionBooth] = useState<string | "">("");
 
 	const categories = [
 		"All",
@@ -32,6 +33,9 @@ function App() {
 			? booths
 			: booths.filter((booth) => booth.category === selectedCategory);
 
+	const handleGetDirection = (booth: string) => {
+		setDirectionBooth(booth);
+	};
 	const handlePathReset = () => {
 		setShouldReset(true);
 	};
@@ -66,7 +70,7 @@ function App() {
 	return (
 		<Layout>
 			<div className="w-[80%] relative">
-				<Graph onGraphReady={setCy} />
+				<Graph onGraphReady={setCy} onGetDirection={handleGetDirection} />
 				<CategoryButtons
 					categories={categories}
 					selectedCategory={selectedCategory}
@@ -81,6 +85,8 @@ function App() {
 					onPathFind={highlightPath}
 					shouldReset={shouldReset}
 					onReset={setShouldReset}
+					directionBooth={directionBooth}
+					onDirectionBooth={setDirectionBooth}
 				/>
 			</div>
 		</Layout>
