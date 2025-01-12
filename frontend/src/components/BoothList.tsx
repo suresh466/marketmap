@@ -15,6 +15,7 @@ interface BoothListProps {
 	onReset: Dispatch<SetStateAction<boolean>>;
 	directionBooth: string;
 	onDirectionBooth: Dispatch<SetStateAction<string>>;
+	onPathTimeout: Dispatch<SetStateAction<number | null>>;
 }
 
 export const BoothList = ({
@@ -24,6 +25,7 @@ export const BoothList = ({
 	onReset,
 	directionBooth,
 	onDirectionBooth,
+	onPathTimeout,
 }: BoothListProps) => {
 	const [originSearchTerm, setOriginSearchTerm] = useState("");
 	const [destSearchTerm, setDestSearchTerm] = useState("");
@@ -51,6 +53,12 @@ export const BoothList = ({
 	};
 
 	useEffect(() => {
+		if (selectedOriginBooth && selectedDestBooth) {
+			onPathTimeout(3);
+		}
+	}, [onPathTimeout, selectedOriginBooth, selectedDestBooth]);
+
+	useEffect(() => {
 		if (directionBooth) {
 			setSelectedDestBooth(directionBooth);
 			setDestSearchTerm(directionBooth);
@@ -65,6 +73,7 @@ export const BoothList = ({
 		if (shouldReset) {
 			setOriginSearchTerm("");
 			setDestSearchTerm("");
+			setActiveSearchBox("origin");
 			onReset(false);
 		}
 	}, [shouldReset, onReset]);

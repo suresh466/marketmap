@@ -22,6 +22,7 @@ function App() {
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const [shouldReset, setShouldReset] = useState<boolean>(false);
 	const [directionBooth, setDirectionBooth] = useState<string | "">("");
+	const [pathTimeout, setPathTimeout] = useState<number | null>(null);
 
 	const categories = [
 		"All",
@@ -37,6 +38,7 @@ function App() {
 		setDirectionBooth(booth);
 	};
 	const handlePathReset = () => {
+		setPathTimeout(null);
 		setShouldReset(true);
 	};
 	const handleCategoryChange = (category: string) => {
@@ -76,7 +78,10 @@ function App() {
 					selectedCategory={selectedCategory}
 					onCategoryChange={handleCategoryChange}
 				/>
-				<PathResetButton onPathReset={handlePathReset} />
+				<PathResetButton
+					onPathReset={handlePathReset}
+					pathTimeout={pathTimeout}
+				/>
 				<FitViewButton onFitView={handleFitView} />
 			</div>
 			<div className="w-[20%] border-l border-gray-200">
@@ -87,6 +92,7 @@ function App() {
 					onReset={setShouldReset}
 					directionBooth={directionBooth}
 					onDirectionBooth={setDirectionBooth}
+					onPathTimeout={setPathTimeout}
 				/>
 			</div>
 		</Layout>
