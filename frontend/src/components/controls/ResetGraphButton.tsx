@@ -42,17 +42,14 @@ export const PathResetButton = ({
 			type="button"
 			onClick={onPathReset}
 			className="
-        absolute bottom-4 right-16
-        flex items-center justify-center
-        min-w-[2.5rem] h-10
-        px-3 py-2
+        px-2 py-1
         bg-white/90 backdrop-blur-sm
         hover:bg-white/100
         text-gray-600 hover:text-gray-800
         border border-gray-200
         rounded-lg shadow-lg
         transition-all duration-200 ease-in-out
-        focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2
+        active:ring-2 active:ring-amber-500 active:ring-offset-2
         group
         "
 			aria-label="Reset path"

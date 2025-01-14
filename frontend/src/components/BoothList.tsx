@@ -213,9 +213,9 @@ export const BoothList = ({
 									type="button"
 									onClick={() => handleBoothClick(booth.label)}
 									className={`
-                    w-full px-4 py-3 text-left
-                    transition-all duration-200
-                    hover:bg-amber-50
+                                    w-full px-4 py-3 text-left
+                                    transition-all duration-200
+                                    hover:bg-amber-50
                     ${
 											selectedDestBooth === booth.label
 												? "bg-amber-50"

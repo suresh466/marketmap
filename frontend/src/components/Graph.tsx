@@ -129,11 +129,11 @@ export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 	}, [onGraphReady]);
 
 	return (
-		<div className="relative h-full">
+		<>
 			{/* Graph container */}
 			<div
 				ref={containerRef}
-				className="h-full relative graph-container bg-gray-50/30"
+				className="h-full graph-container bg-gray-50/30"
 			/>
 
 			{/* Node popup */}
@@ -201,6 +201,6 @@ export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 					</div>
 				</div>
 			)}
-		</div>
+		</>
 	);
 };

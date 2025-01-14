@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { BoothList } from "./components/BoothList";
 import { Graph } from "./components/Graph";
 import { CategoryButtons } from "./components/controls/CategoryButtons";
-import { Layout } from "./components/layout/Layout";
 import { useGraph } from "./hooks/useGraph";
 import "./styles/Graph.css";
 
@@ -70,39 +69,9 @@ function App() {
 	}, []);
 
 	return (
-		<Layout>
-			{/* Main content area - Graph section */}
-			<div className="w-[80%] relative bg-white">
-				<div className="h-full p-6">
-					<Graph onGraphReady={setCy} onGetDirection={handleGetDirection} />
-
-					{/* Controls container */}
-					<div className="absolute bottom-6 left-6 right-6 bg-white/1 backdrop-blur-sm rounded-lg shadow-md border border-gray-100 p-4">
-						<div className="flex justify-between items-center">
-							{/* Category filters */}
-							<div className="flex-1">
-								<CategoryButtons
-									categories={categories}
-									selectedCategory={selectedCategory}
-									onCategoryChange={handleCategoryChange}
-								/>
-							</div>
-
-							{/* Action buttons */}
-							<div className="flex space-x-3">
-								<PathResetButton
-									onPathReset={handlePathReset}
-									pathTimeout={pathTimeout}
-								/>
-								<FitViewButton onFitView={handleFitView} />
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
+		<main className="h-screen flex flex-1 overflow-hidden">
 			{/* Sidebar - Booth list */}
-			<div className="w-[20%] border-l border-gray-100 bg-white shadow-inner">
+			<aside className="w-[20%] border-r border-amber-100 shadow-inner">
 				<BoothList
 					booths={filteredBooths}
 					onPathFind={highlightPath}
@@ -112,8 +81,38 @@ function App() {
 					onDirectionBooth={setDirectionBooth}
 					onPathTimeout={setPathTimeout}
 				/>
+			</aside>
+			{/* Graph section */}
+			<div className="w-[80%] relative">
+				{/* Category filters */}
+				<div className="absolute top-6 left-6 z-10">
+					<div className="flex justify-between items-center gap-4">
+						<div className="flex-1">
+							<CategoryButtons
+								categories={categories}
+								selectedCategory={selectedCategory}
+								onCategoryChange={handleCategoryChange}
+							/>
+						</div>
+					</div>
+				</div>
+				{/* Action buttons */}
+				<div className="absolute top-6 right-6 z-10">
+					<div className="flex justify-between items-center gap-4">
+						<div className="flex gap-3">
+							<PathResetButton
+								onPathReset={handlePathReset}
+								pathTimeout={pathTimeout}
+							/>
+							<FitViewButton onFitView={handleFitView} />
+						</div>
+					</div>
+				</div>
+				<div className="h-full p-4">
+					<Graph onGraphReady={setCy} onGetDirection={handleGetDirection} />
+				</div>
 			</div>
-		</Layout>
+		</main>
 	);
 }
 
