@@ -56,7 +56,7 @@ function App() {
 			.then((data) => {
 				cy.elements().remove();
 				cy.add(data);
-				cy.fit();
+				// cy.fit();
 			})
 			.catch((error) => console.error("Error loading graph:", error));
 	}, [cy]);

@@ -27,6 +27,7 @@ export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 		if (!containerRef.current) return;
 
 		const cy = cytoscape({
+			zoom: 0.5,
 			container: containerRef.current,
 			autoungrabify: true,
 			minZoom: 0.2,
