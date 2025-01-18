@@ -3,38 +3,38 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 interface PathResetButtonProps {
+	selectedOriginBooth: string | null;
+	selectedDestBooth: string | null;
 	onPathReset: () => void;
-	pathTimeout: number | null;
 }
 
 export const PathResetButton = ({
+	selectedOriginBooth,
+	selectedDestBooth,
 	onPathReset,
-	pathTimeout,
 }: PathResetButtonProps) => {
 	const resetIcon = faRefresh;
 
 	const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
 	useEffect(() => {
-		// Effect for handling timer
-		if (pathTimeout === null) {
+		if (!selectedOriginBooth || !selectedDestBooth) {
 			setTimeLeft(null);
 			return;
 		}
-
-		setTimeLeft(pathTimeout);
-		const timer = setInterval(() => {
-			setTimeLeft((prev) => (prev === null || prev <= 0 ? null : prev - 1));
-		}, 1000);
-
-		return () => clearInterval(timer);
-	}, [pathTimeout]);
+		setTimeLeft(5);
+	}, [selectedOriginBooth, selectedDestBooth]);
 
 	useEffect(() => {
-		// Separate effect for handling reset
-		if (timeLeft === 0) {
-			onPathReset();
-		}
+		if (timeLeft === null) return;
+
+		const timer = setInterval(() => {
+			setTimeLeft((prev) => (prev as number) - 1); // null check above gurantees it is a number
+		}, 1000);
+
+		if (timeLeft <= 0) onPathReset();
+
+		return () => clearInterval(timer);
 	}, [timeLeft, onPathReset]);
 
 	return (

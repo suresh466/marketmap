@@ -20,11 +20,16 @@ function App() {
 	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
 	const [directionBooth, setDirectionBooth] = useState<string | "">("");
-	const [pathTimeout, setPathTimeout] = useState<number | null>(null);
 	const [originSearchTerm, setOriginSearchTerm] = useState("");
 	const [destSearchTerm, setDestSearchTerm] = useState("");
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
 		"origin",
+	);
+	const [selectedOriginBooth, setSelectedOriginBooth] = useState<string | null>(
+		null,
+	);
+	const [selectedDestBooth, setSelectedDestBooth] = useState<string | null>(
+		null,
 	);
 
 	const categories = [
@@ -41,7 +46,6 @@ function App() {
 		setDirectionBooth(booth);
 	};
 	const handlePathReset = () => {
-		setPathTimeout(null);
 		setOriginSearchTerm("");
 		setDestSearchTerm("");
 		setActiveSearchBox("origin");
@@ -83,13 +87,16 @@ function App() {
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
 					activeSearchBox={activeSearchBox}
+					selectedOriginBooth={selectedOriginBooth}
+					selectedDestBooth={selectedDestBooth}
 					onPathFind={highlightPath}
 					directionBooth={directionBooth}
 					onDirectionBooth={setDirectionBooth}
-					onPathTimeout={setPathTimeout}
 					onOriginSearchChange={setOriginSearchTerm}
 					onDestSearchChange={setDestSearchTerm}
 					onSearchBoxChange={setActiveSearchBox}
+					onOriginSelect={setSelectedOriginBooth}
+					onDestSelect={setSelectedDestBooth}
 				/>
 			</aside>
 			{/* Graph section */}
@@ -111,8 +118,9 @@ function App() {
 					<div className="flex justify-between items-center gap-4">
 						<div className="flex gap-3">
 							<PathResetButton
+								selectedOriginBooth={selectedOriginBooth}
+								selectedDestBooth={selectedDestBooth}
 								onPathReset={handlePathReset}
-								pathTimeout={pathTimeout}
 							/>
 							<FitViewButton onFitView={handleFitView} />
 						</div>

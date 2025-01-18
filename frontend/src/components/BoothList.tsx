@@ -13,13 +13,16 @@ interface BoothListProps {
 	originSearchTerm: string;
 	destSearchTerm: string;
 	activeSearchBox: string;
+	selectedOriginBooth: string | null;
+	selectedDestBooth: string | null;
 	onPathFind: (path: string[]) => void;
 	directionBooth: string;
 	onDirectionBooth: Dispatch<SetStateAction<string>>;
-	onPathTimeout: Dispatch<SetStateAction<number | null>>;
 	onOriginSearchChange: Dispatch<SetStateAction<string>>;
 	onDestSearchChange: Dispatch<SetStateAction<string>>;
 	onSearchBoxChange: Dispatch<SetStateAction<"origin" | "dest">>;
+	onOriginSelect: Dispatch<SetStateAction<string | null>>;
+	onDestSelect: Dispatch<SetStateAction<string | null>>;
 }
 
 export const BoothList = ({
@@ -27,44 +30,35 @@ export const BoothList = ({
 	originSearchTerm,
 	destSearchTerm,
 	activeSearchBox,
+	selectedOriginBooth,
+	selectedDestBooth,
 	onPathFind,
 	directionBooth,
 	onDirectionBooth,
-	onPathTimeout,
 	onOriginSearchChange,
 	onDestSearchChange,
 	onSearchBoxChange,
+	onOriginSelect,
+	onDestSelect,
 }: BoothListProps) => {
 	const [selectedCategory, setSelectedCategory] = useState("All");
-	const [selectedOriginBooth, setSelectedOriginBooth] = useState<string | null>(
-		null,
-	);
-	const [selectedDestBooth, setSelectedDestBooth] = useState<string | null>(
-		null,
-	);
 
 	const originInputRef = useRef<HTMLInputElement>(null);
 
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
-			setSelectedOriginBooth(boothLabel);
+			onOriginSelect(boothLabel);
 			onOriginSearchChange(boothLabel);
 		} else {
-			setSelectedDestBooth(boothLabel);
+			onDestSelect(boothLabel);
 			onDestSearchChange(boothLabel);
 		}
 	};
 
 	useEffect(() => {
-		if (selectedOriginBooth && selectedDestBooth) {
-			onPathTimeout(3);
-		}
-	}, [onPathTimeout, selectedOriginBooth, selectedDestBooth]);
-
-	useEffect(() => {
 		if (directionBooth) {
 			onDestSearchChange(directionBooth);
-			setSelectedDestBooth(directionBooth);
+			onDestSelect(directionBooth);
 			if (!selectedOriginBooth) {
 				originInputRef.current?.focus();
 			}
@@ -72,15 +66,16 @@ export const BoothList = ({
 		}
 	}, [
 		directionBooth,
-		onDirectionBooth,
 		selectedOriginBooth,
+		onDirectionBooth,
 		onDestSearchChange,
+		onDestSelect,
 	]);
 
 	useEffect(() => {
 		if (!originSearchTerm || !destSearchTerm) {
-			if (!originSearchTerm) setSelectedOriginBooth(null);
-			if (!destSearchTerm) setSelectedDestBooth(null);
+			if (!originSearchTerm) onOriginSelect(null);
+			if (!destSearchTerm) onDestSelect(null);
 			onPathFind([]);
 			return;
 		}
@@ -96,7 +91,7 @@ export const BoothList = ({
 				.catch((error) => {
 					if (error.name !== "AbortError") {
 						console.error("Error fetching path:", error);
-						setSelectedDestBooth(null);
+						onDestSelect(null);
 						onPathFind([]);
 					}
 				});
@@ -106,9 +101,11 @@ export const BoothList = ({
 	}, [
 		selectedOriginBooth,
 		selectedDestBooth,
-		onPathFind,
 		originSearchTerm,
 		destSearchTerm,
+		onPathFind,
+		onOriginSelect,
+		onDestSelect,
 	]);
 
 	const categories = [
