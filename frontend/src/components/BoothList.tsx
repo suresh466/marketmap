@@ -10,25 +10,31 @@ interface Booth {
 
 interface BoothListProps {
 	booths: Booth[];
+	originSearchTerm: string;
+	destSearchTerm: string;
+	activeSearchBox: string;
 	onPathFind: (path: string[]) => void;
-	shouldReset: boolean;
-	onReset: Dispatch<SetStateAction<boolean>>;
 	directionBooth: string;
 	onDirectionBooth: Dispatch<SetStateAction<string>>;
 	onPathTimeout: Dispatch<SetStateAction<number | null>>;
+	onOriginSearchChange: Dispatch<SetStateAction<string>>;
+	onDestSearchChange: Dispatch<SetStateAction<string>>;
+	onSearchBoxChange: Dispatch<SetStateAction<"origin" | "dest">>;
 }
 
 export const BoothList = ({
 	booths,
+	originSearchTerm,
+	destSearchTerm,
+	activeSearchBox,
 	onPathFind,
-	shouldReset,
-	onReset,
 	directionBooth,
 	onDirectionBooth,
 	onPathTimeout,
+	onOriginSearchChange,
+	onDestSearchChange,
+	onSearchBoxChange,
 }: BoothListProps) => {
-	const [originSearchTerm, setOriginSearchTerm] = useState("");
-	const [destSearchTerm, setDestSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("All");
 	const [selectedOriginBooth, setSelectedOriginBooth] = useState<string | null>(
 		null,
@@ -36,19 +42,16 @@ export const BoothList = ({
 	const [selectedDestBooth, setSelectedDestBooth] = useState<string | null>(
 		null,
 	);
-	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
-		"origin",
-	);
 
 	const originInputRef = useRef<HTMLInputElement>(null);
 
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
 			setSelectedOriginBooth(boothLabel);
-			setOriginSearchTerm(boothLabel);
+			onOriginSearchChange(boothLabel);
 		} else {
 			setSelectedDestBooth(boothLabel);
-			setDestSearchTerm(boothLabel);
+			onDestSearchChange(boothLabel);
 		}
 	};
 
@@ -60,23 +63,19 @@ export const BoothList = ({
 
 	useEffect(() => {
 		if (directionBooth) {
+			onDestSearchChange(directionBooth);
 			setSelectedDestBooth(directionBooth);
-			setDestSearchTerm(directionBooth);
 			if (!selectedOriginBooth) {
 				originInputRef.current?.focus();
 			}
 			onDirectionBooth("");
 		}
-	}, [directionBooth, onDirectionBooth, selectedOriginBooth]);
-
-	useEffect(() => {
-		if (shouldReset) {
-			setOriginSearchTerm("");
-			setDestSearchTerm("");
-			setActiveSearchBox("origin");
-			onReset(false);
-		}
-	}, [shouldReset, onReset]);
+	}, [
+		directionBooth,
+		onDirectionBooth,
+		selectedOriginBooth,
+		onDestSearchChange,
+	]);
 
 	useEffect(() => {
 		if (!originSearchTerm || !destSearchTerm) {
@@ -141,8 +140,8 @@ export const BoothList = ({
 					type="search"
 					placeholder="Search Origin"
 					value={originSearchTerm}
-					onChange={(e) => setOriginSearchTerm(e.target.value)}
-					onFocus={() => setActiveSearchBox("origin")}
+					onChange={(e) => onOriginSearchChange(e.target.value)}
+					onFocus={() => onSearchBoxChange("origin")}
 					className="w-full px-4 py-2.5
             bg-gray-50
             border border-gray-200
@@ -160,8 +159,8 @@ export const BoothList = ({
 					type="search"
 					placeholder="Search Destination"
 					value={destSearchTerm}
-					onChange={(e) => setDestSearchTerm(e.target.value)}
-					onFocus={() => setActiveSearchBox("dest")}
+					onChange={(e) => onDestSearchChange(e.target.value)}
+					onFocus={() => onSearchBoxChange("dest")}
 					className="w-full px-4 py-2.5
             bg-gray-50
             border border-gray-200

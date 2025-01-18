@@ -19,9 +19,13 @@ function App() {
 	const { cy, setCy, highlightPath } = useGraph();
 	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
-	const [shouldReset, setShouldReset] = useState<boolean>(false);
 	const [directionBooth, setDirectionBooth] = useState<string | "">("");
 	const [pathTimeout, setPathTimeout] = useState<number | null>(null);
+	const [originSearchTerm, setOriginSearchTerm] = useState("");
+	const [destSearchTerm, setDestSearchTerm] = useState("");
+	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
+		"origin",
+	);
 
 	const categories = [
 		"All",
@@ -38,7 +42,9 @@ function App() {
 	};
 	const handlePathReset = () => {
 		setPathTimeout(null);
-		setShouldReset(true);
+		setOriginSearchTerm("");
+		setDestSearchTerm("");
+		setActiveSearchBox("origin");
 	};
 	const handleCategoryChange = (category: string) => {
 		setSelectedCategory(category);
@@ -74,12 +80,16 @@ function App() {
 			<aside className="w-[20%] border-r border-amber-100 shadow-inner">
 				<BoothList
 					booths={filteredBooths}
+					originSearchTerm={originSearchTerm}
+					destSearchTerm={destSearchTerm}
+					activeSearchBox={activeSearchBox}
 					onPathFind={highlightPath}
-					shouldReset={shouldReset}
-					onReset={setShouldReset}
 					directionBooth={directionBooth}
 					onDirectionBooth={setDirectionBooth}
 					onPathTimeout={setPathTimeout}
+					onOriginSearchChange={setOriginSearchTerm}
+					onDestSearchChange={setDestSearchTerm}
+					onSearchBoxChange={setActiveSearchBox}
 				/>
 			</aside>
 			{/* Graph section */}
