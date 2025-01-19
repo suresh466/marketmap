@@ -11,13 +11,14 @@ export const CategoryButtons = ({
 }: CategoryButtonsProps) => {
 	console.log(selectedCategory);
 	return (
-		<div className="flex flex-wrap gap-2">
+		<div className="flex flex-wrap gap-2 w-fit h-fit">
 			{categories.map((category) => (
 				<button
 					key={category}
 					type="button"
 					onClick={() => onCategoryChange(category)}
 					className={`
+                shadow-sm shadow-amber-200
                 capitalize px-2 py-0
                 text-sm font-semibold
                 rounded-xl

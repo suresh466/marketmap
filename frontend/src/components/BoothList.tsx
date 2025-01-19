@@ -124,7 +124,7 @@ export const BoothList = ({
 	);
 
 	return (
-		<div className="h-full flex flex-col bg-white">
+		<div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden flex flex-col">
 			{/* Origin Search Input */}
 			<div className="p-4 border-b border-gray-100">
 				<input
@@ -135,13 +135,13 @@ export const BoothList = ({
 					onChange={(e) => onOriginSearchChange(e.target.value)}
 					onFocus={() => onSearchBoxChange("origin")}
 					className="w-full px-4 py-2.5
-            bg-gray-50
-            border border-gray-200
-            rounded-lg
-            text-gray-700 placeholder-gray-400
-            transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
-            focus:bg-white"
+              bg-gray-50
+              border border-gray-200
+              rounded-lg
+              text-gray-700 placeholder-gray-400
+              transition-all duration-200
+              focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
+              focus:bg-white"
 				/>
 			</div>
 
@@ -154,18 +154,18 @@ export const BoothList = ({
 					onChange={(e) => onDestSearchChange(e.target.value)}
 					onFocus={() => onSearchBoxChange("dest")}
 					className="w-full px-4 py-2.5
-            bg-gray-50
-            border border-gray-200
-            rounded-lg
-            text-gray-700 placeholder-gray-400
-            transition-all duration-200
-            focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
-            focus:bg-white"
+              bg-gray-50
+              border border-gray-200
+              rounded-lg
+              text-gray-700 placeholder-gray-400
+              transition-all duration-200
+              focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
+              focus:bg-white"
 				/>
 			</div>
 
 			{/* Booth List */}
-			<div className="flex-1 overflow-y-auto scroll-smooth">
+			<div className="max-h-[60vh] overflow-y-auto scroll-smooth">
 				{filteredBooths.length === 0 ? (
 					<div className="flex flex-col items-center justify-center h-full text-gray-500 p-8">
 						<span className="text-lg">No booths found</span>
@@ -179,37 +179,25 @@ export const BoothList = ({
 									type="button"
 									onClick={() => handleBoothClick(booth.label)}
 									className={`
-                                    w-full px-4 py-3 text-left
-                                    transition-all duration-200
-                                    hover:bg-amber-50
-                    ${
-											selectedDestBooth === booth.label
-												? "bg-amber-50"
-												: "bg-white"
-										}
+                      w-full px-4 py-3 text-left
+                      transition-all duration-200
+                      hover:bg-amber-50
+                      ${selectedDestBooth === booth.label ? "bg-amber-50" : "bg-white"}
                     `}
 								>
 									<div
 										className={`
                         font-medium
-                        ${
-													selectedDestBooth === booth.label
-														? "text-amber-900"
-														: "text-gray-900"
-												}
-                        `}
+                        ${selectedDestBooth === booth.label ? "text-amber-900" : "text-gray-900"}
+                      `}
 									>
 										{booth.label}
 									</div>
 									<div
 										className={`
-                            text-sm
-                            ${
-															selectedDestBooth === booth.label
-																? "text-amber-700"
-																: "text-gray-500"
-														}
-                            `}
+                        text-sm
+                        ${selectedDestBooth === booth.label ? "text-amber-700" : "text-gray-500"}
+                      `}
 									>
 										{booth.category}
 									</div>

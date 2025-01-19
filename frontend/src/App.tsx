@@ -66,7 +66,7 @@ function App() {
 			.then((data) => {
 				cy.elements().remove();
 				cy.add(data);
-				// cy.fit();
+				cy.fit();
 			})
 			.catch((error) => console.error("Error loading graph:", error));
 	}, [cy]);
@@ -79,9 +79,9 @@ function App() {
 	}, []);
 
 	return (
-		<main className="h-screen flex flex-1 overflow-hidden">
-			{/* Sidebar - Booth list */}
-			<aside className="w-[20%] border-r border-amber-100 shadow-inner">
+		<main className="h-screen overflow-hidden relative">
+			<div className="absolute top-6 left-6 z-10 flex flex-col md:flex-row md:gap-8 gap-4">
+				{/* Search controls overlay */}
 				<BoothList
 					booths={filteredBooths}
 					originSearchTerm={originSearchTerm}
@@ -99,37 +99,26 @@ function App() {
 					onOriginSelect={setSelectedOriginBooth}
 					onDestSelect={setSelectedDestBooth}
 				/>
-			</aside>
-			{/* Graph section */}
-			<div className="w-[80%] relative">
 				{/* Category filters */}
-				<div className="absolute top-6 left-6 z-10">
-					<div className="flex justify-between items-center gap-4">
-						<div className="flex-1">
-							<CategoryButtons
-								categories={categories}
-								selectedCategory={selectedCategory}
-								onCategoryChange={handleCategoryChange}
-							/>
-						</div>
-					</div>
-				</div>
-				{/* Action buttons */}
-				<div className="absolute top-6 right-6 z-10">
-					<div className="flex justify-between items-center gap-4">
-						<div className="flex gap-3">
-							<PathResetButton
-								selectedOriginBooth={selectedOriginBooth}
-								selectedDestBooth={selectedDestBooth}
-								onPathReset={handlePathReset}
-							/>
-							<FitViewButton onFitView={handleFitView} />
-						</div>
-					</div>
-				</div>
-				<div className="h-full p-4">
-					<Graph onGraphReady={setCy} onGetDirection={handleGetDirection} />
-				</div>
+				<CategoryButtons
+					categories={categories}
+					selectedCategory={selectedCategory}
+					onCategoryChange={handleCategoryChange}
+				/>
+			</div>
+			{/* Action buttons */}
+			<div className="absolute top-6 right-6 z-10 flex gap-3">
+				<PathResetButton
+					selectedOriginBooth={selectedOriginBooth}
+					selectedDestBooth={selectedDestBooth}
+					onPathReset={handlePathReset}
+				/>
+				<FitViewButton onFitView={handleFitView} />
+			</div>
+
+			{/* Graph */}
+			<div className="h-full w-full p-1">
+				<Graph onGraphReady={setCy} onGetDirection={handleGetDirection} />
 			</div>
 		</main>
 	);
