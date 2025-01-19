@@ -59,7 +59,9 @@ export const PathResetButton = ({
 				className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300"
 			/>
 			{timeLeft !== null && (
-				<span className="ml-2 font-medium">{timeLeft}</span>
+				<span className="ml-2 font-medium text-lg text-amber-500">
+					{timeLeft}
+				</span>
 			)}
 		</button>
 	);

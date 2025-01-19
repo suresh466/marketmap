@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
 interface Booth {
@@ -15,6 +15,7 @@ interface BoothListProps {
 	activeSearchBox: string;
 	selectedOriginBooth: string | null;
 	selectedDestBooth: string | null;
+	selectedCategory: string;
 	onPathFind: (path: string[]) => void;
 	directionBooth: string;
 	onDirectionBooth: Dispatch<SetStateAction<string>>;
@@ -32,6 +33,7 @@ export const BoothList = ({
 	activeSearchBox,
 	selectedOriginBooth,
 	selectedDestBooth,
+	selectedCategory,
 	onPathFind,
 	directionBooth,
 	onDirectionBooth,
@@ -41,8 +43,6 @@ export const BoothList = ({
 	onOriginSelect,
 	onDestSelect,
 }: BoothListProps) => {
-	const [selectedCategory, setSelectedCategory] = useState("All");
-
 	const originInputRef = useRef<HTMLInputElement>(null);
 
 	const handleBoothClick = async (boothLabel: string) => {
@@ -108,11 +108,6 @@ export const BoothList = ({
 		onDestSelect,
 	]);
 
-	const categories = [
-		"All",
-		...new Set(booths.map((booth) => booth.category)),
-	].filter(Boolean);
-
 	const filteredBooths = booths.filter(
 		(booth) =>
 			booth.shape_type !== "diamond" &&
@@ -167,31 +162,6 @@ export const BoothList = ({
             focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
             focus:bg-white"
 				/>
-			</div>
-
-			{/* Category Tabs */}
-			<div className="border-b border-gray-100">
-				<nav className="flex overflow-x-auto py-2 px-4 gap-2">
-					{categories.map((category) => (
-						<button
-							type="button"
-							key={category}
-							onClick={() => setSelectedCategory(category)}
-							className={`
-                    whitespace-nowrap px-3 py-1.5
-                    text-sm font-medium rounded-full
-                    transition-all duration-200
-                    ${
-											selectedCategory === category
-												? "bg-amber-500 text-white"
-												: "bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-										}
-                    `}
-						>
-							{category}
-						</button>
-					))}
-				</nav>
 			</div>
 
 			{/* Booth List */}

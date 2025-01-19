@@ -89,6 +89,7 @@ function App() {
 					activeSearchBox={activeSearchBox}
 					selectedOriginBooth={selectedOriginBooth}
 					selectedDestBooth={selectedDestBooth}
+					selectedCategory={selectedCategory}
 					onPathFind={highlightPath}
 					directionBooth={directionBooth}
 					onDirectionBooth={setDirectionBooth}
