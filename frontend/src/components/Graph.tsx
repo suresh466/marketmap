@@ -79,6 +79,36 @@ export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 			},
 		});
 
+		// Add panning limits
+		let justPanned = false;
+		cy.on("viewport", () => {
+			// Prevent infinite recursion from pan adjustment
+			if (justPanned) return (justPanned = false);
+			justPanned = true;
+
+			// Get current viewport properties
+			const zoom = cy.zoom();
+			const pan = cy.pan();
+			const width = cy.width();
+			const height = cy.height();
+			const paddingH = width / 2;
+			const paddingV = height / 2;
+
+			// Get graph elements bounding box
+			const { x1, y1, x2, y2 } = cy.elements().boundingBox();
+
+			// Apply panning limits
+			if (x2 * zoom + pan.x < paddingH) pan.x = paddingH - x2 * zoom;
+			if (y2 * zoom + pan.y < paddingV) pan.y = paddingV - y2 * zoom;
+			if (x1 * zoom + pan.x > width - paddingH)
+				pan.x = width - paddingH - x1 * zoom;
+			if (y1 * zoom + pan.y > height - paddingV)
+				pan.y = height - paddingV - y1 * zoom;
+
+			// Update pan position
+			cy.pan(pan);
+		});
+
 		const getPopupPosition = (x: number, y: number) => {
 			// Get viewport dimensions
 			const viewportWidth = window.innerWidth;
