@@ -11,7 +11,7 @@ export const CategoryButtons = ({
 }: CategoryButtonsProps) => {
 	console.log(selectedCategory);
 	return (
-		<div className="flex flex-wrap gap-2 w-fit h-fit">
+		<div className="flex flex-wrap gap-2 justify-center">
 			{categories.map((category) => (
 				<button
 					key={category}

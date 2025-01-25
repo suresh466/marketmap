@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { BoothList } from "./components/BoothList";
 import { Graph } from "./components/Graph";
-import { CategoryButtons } from "./components/controls/CategoryButtons";
 import { useGraph } from "./hooks/useGraph";
 import "./styles/Graph.css";
 
@@ -50,9 +49,6 @@ function App() {
 		setDestSearchTerm("");
 		setActiveSearchBox("origin");
 	};
-	const handleCategoryChange = (category: string) => {
-		setSelectedCategory(category);
-	};
 
 	const handleFitView = () => {
 		cy?.fit();
@@ -82,12 +78,6 @@ function App() {
 		<main className="h-screen overflow-hidden relative">
 			<div className="absolute top-6 left-6 z-10 flex flex-col md:gap-8 gap-4">
 				{/* Search controls overlay */}
-				{/* Category filters */}
-				<CategoryButtons
-					categories={categories}
-					selectedCategory={selectedCategory}
-					onCategoryChange={handleCategoryChange}
-				/>
 				<BoothList
 					booths={filteredBooths}
 					originSearchTerm={originSearchTerm}
@@ -95,6 +85,7 @@ function App() {
 					activeSearchBox={activeSearchBox}
 					selectedOriginBooth={selectedOriginBooth}
 					selectedDestBooth={selectedDestBooth}
+					categories={categories}
 					selectedCategory={selectedCategory}
 					onPathFind={highlightPath}
 					directionBooth={directionBooth}
@@ -104,6 +95,7 @@ function App() {
 					onSearchBoxChange={setActiveSearchBox}
 					onOriginSelect={setSelectedOriginBooth}
 					onDestSelect={setSelectedDestBooth}
+					setSelectedCategory={setSelectedCategory}
 				/>
 			</div>
 			{/* Action buttons */}

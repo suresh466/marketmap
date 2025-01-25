@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
+import { CategoryButtons } from "./controls/CategoryButtons";
 
 interface Booth {
 	id: string;
@@ -15,6 +16,7 @@ interface BoothListProps {
 	activeSearchBox: string;
 	selectedOriginBooth: string | null;
 	selectedDestBooth: string | null;
+	categories: string[];
 	selectedCategory: string;
 	onPathFind: (path: string[]) => void;
 	directionBooth: string;
@@ -24,6 +26,7 @@ interface BoothListProps {
 	onSearchBoxChange: Dispatch<SetStateAction<"origin" | "dest">>;
 	onOriginSelect: Dispatch<SetStateAction<string | null>>;
 	onDestSelect: Dispatch<SetStateAction<string | null>>;
+	setSelectedCategory: Dispatch<SetStateAction<string>>;
 }
 
 export const BoothList = ({
@@ -33,6 +36,7 @@ export const BoothList = ({
 	activeSearchBox,
 	selectedOriginBooth,
 	selectedDestBooth,
+	categories,
 	selectedCategory,
 	onPathFind,
 	directionBooth,
@@ -42,6 +46,7 @@ export const BoothList = ({
 	onSearchBoxChange,
 	onOriginSelect,
 	onDestSelect,
+	setSelectedCategory,
 }: BoothListProps) => {
 	const originInputRef = useRef<HTMLInputElement>(null);
 	const boothListRef = useRef<HTMLDivElement>(null);
@@ -56,6 +61,9 @@ export const BoothList = ({
 			onDestSelect(boothLabel);
 			onDestSearchChange(boothLabel);
 		}
+	};
+	const handleCategoryChange = (category: string) => {
+		setSelectedCategory(category);
 	};
 
 	// Focus origin input when booth list expands and origin is not selected
@@ -226,6 +234,15 @@ export const BoothList = ({
               transition-all duration-200
               focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
               focus:bg-white"
+						/>
+					</div>
+
+					{/* Category filters */}
+					<div className="px-4 py-3 border-b border-gray-100">
+						<CategoryButtons
+							categories={categories}
+							selectedCategory={selectedCategory}
+							onCategoryChange={handleCategoryChange}
 						/>
 					</div>
 
