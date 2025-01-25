@@ -80,8 +80,14 @@ function App() {
 
 	return (
 		<main className="h-screen overflow-hidden relative">
-			<div className="absolute top-6 left-6 z-10 flex flex-col md:flex-row md:gap-8 gap-4">
+			<div className="absolute top-6 left-6 z-10 flex flex-col md:gap-8 gap-4">
 				{/* Search controls overlay */}
+				{/* Category filters */}
+				<CategoryButtons
+					categories={categories}
+					selectedCategory={selectedCategory}
+					onCategoryChange={handleCategoryChange}
+				/>
 				<BoothList
 					booths={filteredBooths}
 					originSearchTerm={originSearchTerm}
@@ -99,15 +105,10 @@ function App() {
 					onOriginSelect={setSelectedOriginBooth}
 					onDestSelect={setSelectedDestBooth}
 				/>
-				{/* Category filters */}
-				<CategoryButtons
-					categories={categories}
-					selectedCategory={selectedCategory}
-					onCategoryChange={handleCategoryChange}
-				/>
 			</div>
 			{/* Action buttons */}
-			<div className="absolute top-6 right-6 z-10 flex gap-3">
+			{/* todo: fix the button not visible with bottom-32 maybe look into safe-area-insets */}
+			<div className="absolute bottom-32 right-6 md:bottom-auto md:top-6 z-20 flex gap-3">
 				<PathResetButton
 					selectedOriginBooth={selectedOriginBooth}
 					selectedDestBooth={selectedDestBooth}

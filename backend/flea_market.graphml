@@ -2326,6 +2326,7 @@
       </data>
     </node>
     <node id="n208">
+      <data key="d5" xml:space="preserve"><![CDATA[Category3]]></data>
       <data key="d12">
         <y:ShapeNode>
           <y:Geometry height="80.0" width="140.0" x="1060.0" y="1690.0"/>
@@ -3096,6 +3097,7 @@
       </data>
     </node>
     <node id="n278">
+      <data key="d5" xml:space="preserve"><![CDATA[Food]]></data>
       <data key="d12">
         <y:ShapeNode>
           <y:Geometry height="80.0" width="100.0" x="1820.0" y="2180.0"/>
@@ -3624,6 +3626,7 @@
       </data>
     </node>
     <node id="n326">
+      <data key="d5" xml:space="preserve"><![CDATA[Other]]></data>
       <data key="d12">
         <y:ShapeNode>
           <y:Geometry height="250.0" width="550.0" x="610.0" y="2490.0"/>
@@ -14862,7 +14865,6 @@
       </data>
     </edge>
     <edge id="e600" source="n466" target="n326">
-      <data key="d17"/>
       <data key="d18">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="60.0"/>
