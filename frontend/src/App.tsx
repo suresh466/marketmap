@@ -76,31 +76,33 @@ function App() {
 
 	return (
 		<main className="h-screen overflow-hidden relative">
-			<div className="absolute top-6 left-6 z-10 flex flex-col md:gap-8 gap-4">
-				{/* Search controls overlay */}
-				<BoothList
-					booths={filteredBooths}
-					originSearchTerm={originSearchTerm}
-					destSearchTerm={destSearchTerm}
-					activeSearchBox={activeSearchBox}
-					selectedOriginBooth={selectedOriginBooth}
-					selectedDestBooth={selectedDestBooth}
-					categories={categories}
-					selectedCategory={selectedCategory}
-					onPathFind={highlightPath}
-					directionBooth={directionBooth}
-					onDirectionBooth={setDirectionBooth}
-					onOriginSearchChange={setOriginSearchTerm}
-					onDestSearchChange={setDestSearchTerm}
-					onSearchBoxChange={setActiveSearchBox}
-					onOriginSelect={setSelectedOriginBooth}
-					onDestSelect={setSelectedDestBooth}
-					setSelectedCategory={setSelectedCategory}
-				/>
+			<div className="flex justify-center md:justify-start absolute top-6 z-20 w-full md:w-1/4 md:pl-8">
+				<div className="w-[90%]">
+					{/* Search controls overlay */}
+					<BoothList
+						booths={filteredBooths}
+						originSearchTerm={originSearchTerm}
+						destSearchTerm={destSearchTerm}
+						activeSearchBox={activeSearchBox}
+						selectedOriginBooth={selectedOriginBooth}
+						selectedDestBooth={selectedDestBooth}
+						categories={categories}
+						selectedCategory={selectedCategory}
+						onPathFind={highlightPath}
+						directionBooth={directionBooth}
+						onDirectionBooth={setDirectionBooth}
+						onOriginSearchChange={setOriginSearchTerm}
+						onDestSearchChange={setDestSearchTerm}
+						onSearchBoxChange={setActiveSearchBox}
+						onOriginSelect={setSelectedOriginBooth}
+						onDestSelect={setSelectedDestBooth}
+						setSelectedCategory={setSelectedCategory}
+					/>
+				</div>
 			</div>
 			{/* Action buttons */}
 			{/* todo: fix the button not visible with bottom-32 maybe look into safe-area-insets */}
-			<div className="absolute bottom-32 right-6 md:bottom-auto md:top-6 z-20 flex gap-3">
+			<div className="absolute right-8 z-10 flex gap-3 md:top-6 bottom-32 md:bottom-auto">
 				<PathResetButton
 					selectedOriginBooth={selectedOriginBooth}
 					selectedDestBooth={selectedDestBooth}

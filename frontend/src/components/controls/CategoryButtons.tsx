@@ -18,11 +18,11 @@ export const CategoryButtons = ({
 					type="button"
 					onClick={() => onCategoryChange(category)}
 					className={`
-                shadow-sm shadow-amber-200
-                capitalize px-2 py-0
+                shadow-md capitalize
+                px-2 py-0
                 text-sm font-semibold
-                rounded-xl
-                transition-all duration-200 ease-in-out
+                rounded-xl transition-all
+                duration-200 ease-in-out
                 focus:outline-none focus:ring-2 focus:ring-offset-2
                 ${
 									selectedCategory.toLowerCase() === category.toLowerCase()
