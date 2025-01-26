@@ -117,6 +117,7 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
                     "category": node[1].get("category", "no_cat"),
                 },
                 "position": {"x": center_x, "y": center_y},
+                "pannable": "true",
             }
             elements["nodes"].append(node_data)
 

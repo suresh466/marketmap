@@ -29,7 +29,7 @@ export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 		const cy = cytoscape({
 			// zoom: 0.5,
 			container: containerRef.current,
-			autoungrabify: true,
+			// autoungrabify: true,
 			minZoom: 0.2,
 			maxZoom: 2,
 			wheelSensitivity: 0.1,
