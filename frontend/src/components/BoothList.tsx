@@ -76,7 +76,7 @@ export const BoothList = ({
 	// Collapse expanded list when clicking outside
 	useEffect(() => {
 		if (isBoothListExpanded) {
-			const handleClickOutside = (event: MouseEvent) => {
+			const handleClickOutside = (event: MouseEvent | TouchEvent) => {
 				const target = event.target as Node;
 				if (boothListRef.current && !boothListRef.current.contains(target)) {
 					setIsBoothListExpanded(false);
@@ -84,8 +84,10 @@ export const BoothList = ({
 			};
 
 			document.addEventListener("click", handleClickOutside);
+			document.addEventListener("touchend", handleClickOutside);
 			return () => {
 				document.removeEventListener("click", handleClickOutside);
+				document.removeEventListener("touchend", handleClickOutside);
 			};
 		}
 	}, [isBoothListExpanded]);
@@ -138,7 +140,13 @@ export const BoothList = ({
 				signal: controller.signal,
 			})
 				.then((response) => response.json())
-				.then((data) => onPathFind(data.path))
+				.then((data) => {
+					// Only collapse on mobile screens
+					if (window.matchMedia("(max-width: 767px)").matches) {
+						setIsBoothListExpanded(false);
+					}
+					onPathFind(data.path);
+				})
 				.catch((error) => {
 					if (error.name !== "AbortError") {
 						console.error("Error fetching path:", error);
