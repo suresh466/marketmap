@@ -153,47 +153,43 @@ export const Graph = ({ onGraphReady, onGetDirection }: GraphProps) => {
 
 			{/* Node popup */}
 			{popupData && (
-				<div className="absolute bottom-0 z-30 flex justify-center inset-x-0">
-					<div className="w-[90%] bg-white rounded-lg shadow-lg p-5 border border-gray-100">
-						<div className="space-y-3">
-							{/* Booth name */}
-							<h3 className="font-semibold text-gray-900 text-lg">
-								{popupData.label}
-							</h3>
+				<div className="absolute z-30 bottom-2 inset-x-4 md:inset-auto md:top-6 md:left-6 md:bottom-4 md:w-1/4 bg-white rounded-lg shadow-lg p-5 border border-gray-100">
+					<div className="space-y-3">
+						{/* Booth name */}
+						<h3 className="font-semibold text-gray-900 text-xl text-center">
+							{popupData.label}
+						</h3>
 
-							{/* Booth details */}
-							<div className="space-y-2 text-sm">
-								<div className="flex items-center justify-between text-gray-600">
-									<span>Type:</span>
-									<span className="font-medium">{popupData.shape_type}</span>
-								</div>
-								<div className="flex items-center justify-between text-gray-600">
-									<span>ID:</span>
-									<span className="font-medium">{popupData.id}</span>
-								</div>
-								<div className="flex items-center justify-between text-gray-600">
-									<span>Dimension:</span>
-									<span className="font-medium">{popupData.dimension}</span>
-								</div>
-								<div className="flex items-center justify-between text-gray-600">
-									<span>Category:</span>
-									<span className="font-medium">{popupData.category}</span>
-								</div>
-
-								{/* Get directions button */}
-								<button
-									type="button"
-									className="w-full mt-3 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg
-            transition-colors duration-200 font-medium text-sm
-            focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
-									onClick={() => {
-										setPopupData(null);
-										onGetDirection(popupData.label);
-									}}
-								>
-									Get Directions
-								</button>
+						{/* Booth details */}
+						<div className="space-y-2 text-sm">
+							<div className="flex items-center justify-between text-gray-600">
+								<span>Type:</span>
+								<span className="font-medium">{popupData.shape_type}</span>
 							</div>
+							<div className="flex items-center justify-between text-gray-600">
+								<span>ID:</span>
+								<span className="font-medium">{popupData.id}</span>
+							</div>
+							<div className="flex items-center justify-between text-gray-600">
+								<span>Dimension:</span>
+								<span className="font-medium">{popupData.dimension}</span>
+							</div>
+							<div className="flex items-center justify-between text-gray-600">
+								<span>Category:</span>
+								<span className="font-medium">{popupData.category}</span>
+							</div>
+
+							{/* Get directions button */}
+							<button
+								type="button"
+								className="w-full mt-3 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+								onClick={() => {
+									setPopupData(null);
+									onGetDirection(popupData.label);
+								}}
+							>
+								Get Directions
+							</button>
 						</div>
 					</div>
 				</div>
