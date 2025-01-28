@@ -76,29 +76,27 @@ function App() {
 
 	return (
 		<main className="h-screen overflow-hidden relative">
-			<div className="flex justify-center md:justify-start absolute top-6 z-20 w-full md:w-1/4 md:pl-8">
-				<div className="w-[90%]">
-					{/* Search controls overlay */}
-					<BoothList
-						booths={filteredBooths}
-						originSearchTerm={originSearchTerm}
-						destSearchTerm={destSearchTerm}
-						activeSearchBox={activeSearchBox}
-						selectedOriginBooth={selectedOriginBooth}
-						selectedDestBooth={selectedDestBooth}
-						categories={categories}
-						selectedCategory={selectedCategory}
-						onPathFind={highlightPath}
-						directionBooth={directionBooth}
-						onDirectionBooth={setDirectionBooth}
-						onOriginSearchChange={setOriginSearchTerm}
-						onDestSearchChange={setDestSearchTerm}
-						onSearchBoxChange={setActiveSearchBox}
-						onOriginSelect={setSelectedOriginBooth}
-						onDestSelect={setSelectedDestBooth}
-						setSelectedCategory={setSelectedCategory}
-					/>
-				</div>
+			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
+				{/* Search controls overlay */}
+				<BoothList
+					booths={filteredBooths}
+					originSearchTerm={originSearchTerm}
+					destSearchTerm={destSearchTerm}
+					activeSearchBox={activeSearchBox}
+					selectedOriginBooth={selectedOriginBooth}
+					selectedDestBooth={selectedDestBooth}
+					categories={categories}
+					selectedCategory={selectedCategory}
+					onPathFind={highlightPath}
+					directionBooth={directionBooth}
+					onDirectionBooth={setDirectionBooth}
+					onOriginSearchChange={setOriginSearchTerm}
+					onDestSearchChange={setDestSearchTerm}
+					onSearchBoxChange={setActiveSearchBox}
+					onOriginSelect={setSelectedOriginBooth}
+					onDestSelect={setSelectedDestBooth}
+					setSelectedCategory={setSelectedCategory}
+				/>
 			</div>
 			{/* Action buttons */}
 			{/* todo: fix the button not visible with bottom-32 maybe look into safe-area-insets */}
