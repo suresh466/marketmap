@@ -23,6 +23,7 @@ interface BoothListProps {
 	selectedCategory: string;
 	onPathFind: (path: string[]) => void;
 	directionBooth: string;
+	imHereBooth: string;
 	onDirectionBooth: Dispatch<SetStateAction<string>>;
 	onOriginSearchChange: Dispatch<SetStateAction<string>>;
 	onDestSearchChange: Dispatch<SetStateAction<string>>;
@@ -43,6 +44,7 @@ export const BoothList = ({
 	selectedCategory,
 	onPathFind,
 	directionBooth,
+	imHereBooth,
 	onDirectionBooth,
 	onOriginSearchChange,
 	onDestSearchChange,
@@ -55,6 +57,15 @@ export const BoothList = ({
 	const boothListRef = useRef<HTMLDivElement>(null);
 
 	const [isBoothListExpanded, setIsBoothListExpanded] = useState(false);
+
+	// set origin booth when I'm here buttom is clicked
+	useEffect(() => {
+		if (imHereBooth) {
+			onOriginSelect(imHereBooth);
+			onOriginSearchChange(imHereBooth);
+		}
+		// onImHereBooth("");
+	}, [imHereBooth, onOriginSelect, onOriginSearchChange]);
 
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
