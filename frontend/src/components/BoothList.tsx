@@ -22,9 +22,9 @@ interface BoothListProps {
 	categories: string[];
 	selectedCategory: string;
 	onPathFind: (path: string[]) => void;
-	directionBooth: string;
+	getHereBooth: string;
 	imHereBooth: string;
-	onDirectionBooth: Dispatch<SetStateAction<string>>;
+	onGetHere: Dispatch<SetStateAction<string>>;
 	onOriginSearchChange: Dispatch<SetStateAction<string>>;
 	onDestSearchChange: Dispatch<SetStateAction<string>>;
 	onSearchBoxChange: Dispatch<SetStateAction<"origin" | "dest">>;
@@ -43,9 +43,9 @@ export const BoothList = ({
 	categories,
 	selectedCategory,
 	onPathFind,
-	directionBooth,
+	getHereBooth,
 	imHereBooth,
-	onDirectionBooth,
+	onGetHere,
 	onOriginSearchChange,
 	onDestSearchChange,
 	onSearchBoxChange,
@@ -121,20 +121,20 @@ export const BoothList = ({
 		}
 	}, [isBoothListExpanded]);
 
-	// set destination booth when get direction button is clicked in booth pop-up
+	// set destination booth when get here button is clicked in booth pop-up
 	useEffect(() => {
-		if (directionBooth) {
-			onDestSearchChange(directionBooth);
-			onDestSelect(directionBooth);
+		if (getHereBooth) {
+			onDestSearchChange(getHereBooth);
+			onDestSelect(getHereBooth);
 			if (!selectedOriginBooth) {
 				setIsBoothListExpanded(true);
 			}
-			onDirectionBooth("");
+			onGetHere("");
 		}
 	}, [
-		directionBooth,
+		getHereBooth,
 		selectedOriginBooth,
-		onDirectionBooth,
+		onGetHere,
 		onDestSearchChange,
 		onDestSelect,
 	]);

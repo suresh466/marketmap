@@ -18,7 +18,7 @@ function App() {
 	const { cy, setCy, highlightPath } = useGraph();
 	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
-	const [directionBooth, setDirectionBooth] = useState<string | "">("");
+	const [getHereBooth, setGetHereBooth] = useState<string | "">("");
 	const [imHereBooth, setImHereBooth] = useState<string | "">("");
 	const [originSearchTerm, setOriginSearchTerm] = useState("");
 	const [destSearchTerm, setDestSearchTerm] = useState("");
@@ -45,8 +45,8 @@ function App() {
 	const handleImHere = (booth: string) => {
 		setImHereBooth(booth);
 	};
-	const handleGetDirection = (booth: string) => {
-		setDirectionBooth(booth);
+	const handleGetHere = (booth: string) => {
+		setGetHereBooth(booth);
 	};
 	const handlePathReset = () => {
 		setOriginSearchTerm("");
@@ -92,9 +92,9 @@ function App() {
 					categories={categories}
 					selectedCategory={selectedCategory}
 					onPathFind={highlightPath}
-					directionBooth={directionBooth}
+					getHereBooth={getHereBooth}
 					imHereBooth={imHereBooth}
-					onDirectionBooth={setDirectionBooth}
+					onGetHere={setGetHereBooth}
 					onOriginSearchChange={setOriginSearchTerm}
 					onDestSearchChange={setDestSearchTerm}
 					onSearchBoxChange={setActiveSearchBox}
@@ -118,7 +118,7 @@ function App() {
 			<div className="h-full w-full p-1">
 				<Graph
 					onGraphReady={setCy}
-					onGetDirection={handleGetDirection}
+					onGetHere={handleGetHere}
 					onImHere={handleImHere}
 				/>
 			</div>
