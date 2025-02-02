@@ -181,7 +181,7 @@ async def get_booths():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/shortest-path/{start_label}/{end_label}")
+@app.get("/shortest-path/-/{start_label:path}/-/{end_label:path}")
 async def get_shortest_path(start_label: str, end_label: str):
     G = prepare_graph(FILE)
 

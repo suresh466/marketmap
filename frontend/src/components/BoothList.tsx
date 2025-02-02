@@ -150,9 +150,12 @@ export const BoothList = ({
 		if (selectedOriginBooth && selectedDestBooth) {
 			const controller = new AbortController();
 
-			fetch(`/shortest-path/${selectedOriginBooth}/${selectedDestBooth}`, {
-				signal: controller.signal,
-			})
+			fetch(
+				`/shortest-path/-/${encodeURIComponent(selectedOriginBooth)}/-/${encodeURIComponent(selectedDestBooth)}`,
+				{
+					signal: controller.signal,
+				},
+			)
 				.then((response) => response.json())
 				.then((data) => {
 					// Only collapse on mobile screens
