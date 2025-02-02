@@ -3,27 +3,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 
 interface PathResetButtonProps {
-	selectedOriginBooth: string | null;
-	selectedDestBooth: string | null;
 	onPathReset: () => void;
 }
 
-export const PathResetButton = ({
-	selectedOriginBooth,
-	selectedDestBooth,
-	onPathReset,
-}: PathResetButtonProps) => {
+export const PathResetButton = ({ onPathReset }: PathResetButtonProps) => {
 	const resetIcon = faRefresh;
 
 	const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
-	useEffect(() => {
-		if (!selectedOriginBooth || !selectedDestBooth) {
-			setTimeLeft(null);
-			return;
-		}
-		setTimeLeft(5);
-	}, [selectedOriginBooth, selectedDestBooth]);
+	// useEffect(() => {
+	// 	if (!selectedOriginBooth || !selectedDestBooth) {
+	// 		setTimeLeft(null);
+	// 		return;
+	// 	}
+	// 	setTimeLeft(5);
+	// }, [selectedOriginBooth, selectedDestBooth]);
 
 	useEffect(() => {
 		if (timeLeft === null) return;

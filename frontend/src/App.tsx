@@ -106,11 +106,7 @@ function App() {
 			{/* Action buttons */}
 			{/* todo: fix the button not visible with bottom-32 maybe look into safe-area-insets */}
 			<div className="absolute right-8 z-10 flex gap-3 md:top-6 bottom-32 md:bottom-auto">
-				<PathResetButton
-					selectedOriginBooth={selectedOriginBooth}
-					selectedDestBooth={selectedDestBooth}
-					onPathReset={handlePathReset}
-				/>
+				<PathResetButton onPathReset={handlePathReset} />
 				<FitViewButton onFitView={handleFitView} />
 			</div>
 
