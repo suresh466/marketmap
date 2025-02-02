@@ -37,9 +37,7 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 		if (!containerRef.current) return;
 
 		const cy = cytoscape({
-			// zoom: 0.5,
 			container: containerRef.current,
-			// autoungrabify: true,
 			minZoom: 0.1,
 			maxZoom: 2,
 			wheelSensitivity: 0.1,
@@ -80,9 +78,8 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 				{
 					selector: ".highlighted",
 					style: {
-						"background-color": "#ff0",
+						"background-color": "#F59E0B",
 						"line-color": "#f00",
-						"target-arrow-color": "#f00",
 						visibility: "visible",
 					},
 				},
