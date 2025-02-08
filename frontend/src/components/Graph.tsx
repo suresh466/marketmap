@@ -45,12 +45,15 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 				{
 					selector: "node",
 					style: {
-						"background-color": "#808080",
+						"background-color": "#A3B18A",
+						color: "#000",
+						"border-color": "#000",
 						label: "data(label)",
 						"text-valign": "center",
 						"text-halign": "center",
 						width: "data(width)",
 						height: "data(height)",
+						"border-width": 5,
 						shape: (ele) => {
 							const shape_type = ele.data("shape_type");
 							if (shape_type === "hexagon") return "concave-hexagon";
@@ -67,7 +70,7 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 				{
 					selector: "edge",
 					style: {
-						width: 2,
+						width: 5,
 						"line-color": "#999",
 						"curve-style": "round-taxi",
 						"source-endpoint": "inside-to-node",
