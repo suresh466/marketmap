@@ -33,6 +33,7 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 			return () => window.removeEventListener("popstate", handlePopState);
 		}
 	}, [popupData]);
+
 	useEffect(() => {
 		if (!containerRef.current) return;
 
@@ -70,20 +71,20 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 				{
 					selector: "edge",
 					style: {
+						visibility: "hidden",
 						width: 5,
 						"line-color": "#999",
 						"curve-style": "round-taxi",
 						"source-endpoint": "inside-to-node",
 						"target-endpoint": "inside-to-node",
-						visibility: "hidden",
 					},
 				},
 				{
 					selector: ".highlighted",
 					style: {
+						visibility: "visible",
 						"background-color": "#F59E0B",
 						"line-color": "#f00",
-						visibility: "visible",
 					},
 				},
 			],

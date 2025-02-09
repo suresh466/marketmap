@@ -6,7 +6,10 @@ export const useGraph = () => {
 
 	const highlightPath = useCallback(
 		(path: string[]) => {
-			if (!cy) return;
+			if (!cy) {
+				console.error("cy is null cannot highlight path");
+				return;
+			}
 
 			cy.elements().removeClass("highlighted");
 

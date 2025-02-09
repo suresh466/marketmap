@@ -22,9 +22,6 @@ interface BoothListProps {
 	categories: string[];
 	selectedCategory: string;
 	onPathFind: (path: string[]) => void;
-	getHereBooth: string;
-	imHereBooth: string;
-	onGetHere: Dispatch<SetStateAction<string>>;
 	onOriginSearchChange: Dispatch<SetStateAction<string>>;
 	onDestSearchChange: Dispatch<SetStateAction<string>>;
 	onSearchBoxChange: Dispatch<SetStateAction<"origin" | "dest">>;
@@ -43,9 +40,6 @@ export const BoothList = ({
 	categories,
 	selectedCategory,
 	onPathFind,
-	getHereBooth,
-	imHereBooth,
-	onGetHere,
 	onOriginSearchChange,
 	onDestSearchChange,
 	onSearchBoxChange,
@@ -57,15 +51,6 @@ export const BoothList = ({
 	const boothListRef = useRef<HTMLDivElement>(null);
 
 	const [isBoothListExpanded, setIsBoothListExpanded] = useState(false);
-
-	// set origin booth when I'm here buttom is clicked
-	useEffect(() => {
-		if (imHereBooth) {
-			onOriginSelect(imHereBooth);
-			onOriginSearchChange(imHereBooth);
-		}
-		// onImHereBooth("");
-	}, [imHereBooth, onOriginSelect, onOriginSearchChange]);
 
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
@@ -120,24 +105,6 @@ export const BoothList = ({
 			return () => window.removeEventListener("popstate", handlePopState);
 		}
 	}, [isBoothListExpanded]);
-
-	// set destination booth when get here button is clicked in booth pop-up
-	useEffect(() => {
-		if (getHereBooth) {
-			onDestSearchChange(getHereBooth);
-			onDestSelect(getHereBooth);
-			if (!selectedOriginBooth) {
-				setIsBoothListExpanded(true);
-			}
-			onGetHere("");
-		}
-	}, [
-		getHereBooth,
-		selectedOriginBooth,
-		onGetHere,
-		onDestSearchChange,
-		onDestSelect,
-	]);
 
 	useEffect(() => {
 		if (!originSearchTerm || !destSearchTerm) {
