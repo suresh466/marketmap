@@ -16,7 +16,7 @@ interface Booth {
 }
 
 function App() {
-	const { cy, setCy, highlightPath } = useGraph();
+	const { cy, initCyRef, highlightPath } = useGraph();
 	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
@@ -131,9 +131,9 @@ function App() {
 			{/* Graph */}
 			<div className="h-full w-full p-1">
 				<Graph
+					initCyRef={initCyRef}
 					onImHere={handleImHere}
 					onGetHere={handleGetHere}
-					onGraphReady={setCy}
 				/>
 			</div>
 		</main>

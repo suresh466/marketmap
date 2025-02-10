@@ -11,12 +11,12 @@ interface NodePopupData {
 }
 
 interface GraphProps {
-	onGraphReady: (cy: cytoscape.Core) => void;
+	initCyRef: (instance: cytoscape.Core) => void;
 	onGetHere: (booth: string) => void;
 	onImHere: (booth: string) => void;
 }
 
-export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
+export const Graph = ({ initCyRef, onGetHere, onImHere }: GraphProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [popupData, setPopupData] = useState<NodePopupData | null>(null);
 
@@ -142,12 +142,12 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 			}
 		});
 
-		onGraphReady(cy);
+		initCyRef(cy);
 
 		return () => {
 			cy.destroy();
 		};
-	}, [onGraphReady]);
+	}, [initCyRef]);
 
 	return (
 		<>
