@@ -6,6 +6,7 @@ import "./styles/Graph.css";
 
 import { FitViewButton } from "./components/controls/FitViewButton";
 import { PathResetButton } from "./components/controls/ResetGraphButton";
+import { ShareButton } from "./components/controls/ShareButton";
 
 interface Booth {
 	id: string;
@@ -18,17 +19,22 @@ function App() {
 	const { cy, setCy, highlightPath } = useGraph();
 	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("All");
-	const [originSearchTerm, setOriginSearchTerm] = useState("");
-	const [destSearchTerm, setDestSearchTerm] = useState("");
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
 		"origin",
 	);
+
+	const params = new URLSearchParams(window.location.search);
+	const from = params.get("from");
+	const to = params.get("to");
+
+	// Initialize from URL params
+	const [originSearchTerm, setOriginSearchTerm] = useState(from || "");
+	const [destSearchTerm, setDestSearchTerm] = useState(to || "");
 	const [selectedOriginBooth, setSelectedOriginBooth] = useState<string | null>(
-		null,
+		from,
 	);
-	const [selectedDestBooth, setSelectedDestBooth] = useState<string | null>(
-		null,
-	);
+	const [selectedDestBooth, setSelectedDestBooth] = useState<string | null>(to);
+
 	function handleImHere(booth: string) {
 		setOriginSearchTerm(booth);
 		setSelectedOriginBooth(booth);
@@ -38,6 +44,19 @@ function App() {
 		setDestSearchTerm(booth);
 		setSelectedDestBooth(booth);
 	}
+
+	// Sync state to URL
+	useEffect(() => {
+		const params = new URLSearchParams();
+		if (selectedOriginBooth) params.set("from", selectedOriginBooth);
+		if (selectedDestBooth) params.set("to", selectedDestBooth);
+
+		const newUrl = params.toString()
+			? `${window.location.pathname}?${params.toString()}`
+			: window.location.pathname;
+
+		window.history.replaceState({}, "", newUrl);
+	}, [selectedOriginBooth, selectedDestBooth]);
 
 	const categories = [
 		"All",
@@ -104,6 +123,7 @@ function App() {
 			{/* Action buttons */}
 			{/* todo: fix the button not visible with bottom-32 maybe look into safe-area-insets */}
 			<div className="absolute right-8 z-10 flex gap-3 md:top-6 bottom-32 md:bottom-auto">
+				<ShareButton />
 				<PathResetButton onPathReset={handlePathReset} />
 				<FitViewButton onFitView={handleFitView} />
 			</div>

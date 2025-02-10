@@ -9,7 +9,6 @@ export const CategoryButtons = ({
 	selectedCategory,
 	onCategoryChange,
 }: CategoryButtonsProps) => {
-	console.log(selectedCategory);
 	return (
 		<div className="flex flex-wrap gap-2 justify-center">
 			{categories.map((category) => (

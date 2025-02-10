@@ -110,7 +110,6 @@ export const BoothList = ({
 		if (!originSearchTerm || !destSearchTerm) {
 			if (!originSearchTerm) onOriginSelect(null);
 			if (!destSearchTerm) onDestSelect(null);
-			onPathFind([]);
 			return;
 		}
 
@@ -129,6 +128,9 @@ export const BoothList = ({
 					if (window.matchMedia("(max-width: 767px)").matches) {
 						setIsBoothListExpanded(false);
 					}
+
+					// todo: is this check necessary here
+					// if (cy) onPathFind(data.path);
 					onPathFind(data.path);
 				})
 				.catch((error) => {

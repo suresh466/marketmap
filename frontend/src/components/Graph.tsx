@@ -74,7 +74,7 @@ export const Graph = ({ onGraphReady, onGetHere, onImHere }: GraphProps) => {
 						visibility: "hidden",
 						width: 5,
 						"line-color": "#999",
-						"curve-style": "round-taxi",
+						"curve-style": "round-taxi" as "taxi",
 						"source-endpoint": "inside-to-node",
 						"target-endpoint": "inside-to-node",
 					},
