@@ -114,7 +114,7 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
                     "height": node[1].get("height", 30),
                     "shape_type": node[1].get("shape_type", "rhomboid"),
                     "name": node[1].get("name", "no_name"),
-                    "category": node[1].get("category", "no_cat"),
+                    "category": node[1].get("category", "no_cat").lower(),
                 },
                 "position": {"x": center_x, "y": center_y},
                 "pannable": "true",
@@ -144,9 +144,12 @@ def load_booths(file_path: str) -> List:
     """
     try:
         G = prepare_graph(file_path)
-        booths = [
-            {"id": str(node_id), **attrs} for node_id, attrs in G.nodes(data=True)
-        ]
+        booths = []
+        for node_id, attrs in G.nodes(data=True):
+            booth = {"id": str(node_id)}
+            for k, v in attrs.items():
+                booth[k] = v.lower() if k == "category" else v
+            booths.append(booth)
 
         return booths
     except Exception as e:

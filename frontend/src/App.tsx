@@ -18,7 +18,6 @@ interface Booth {
 function App() {
 	const { cy, initCyRef, highlightPath } = useGraph();
 	const [booths, setBooths] = useState<Booth[]>([]);
-	const [selectedCategory, setSelectedCategory] = useState<string>("All");
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
 		"origin",
 	);
@@ -58,16 +57,6 @@ function App() {
 		window.history.replaceState({}, "", newUrl);
 	}, [selectedOriginBooth, selectedDestBooth]);
 
-	const categories = [
-		"All",
-		...new Set(booths.map((booth) => booth.category)),
-	].filter(Boolean);
-
-	const filteredBooths =
-		selectedCategory.toLowerCase() === "all"
-			? booths
-			: booths.filter((booth) => booth.category === selectedCategory);
-
 	const handlePathReset = () => {
 		setOriginSearchTerm("");
 		setDestSearchTerm("");
@@ -79,7 +68,10 @@ function App() {
 	};
 
 	useEffect(() => {
-		if (!cy) return;
+		if (!cy) {
+			console.error("cy is not initialized");
+			return;
+		}
 
 		fetch("/api/graph")
 			.then((response) => response.json())
@@ -103,21 +95,18 @@ function App() {
 			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
 				{/* Search controls overlay */}
 				<BoothList
-					booths={filteredBooths}
+					booths={booths}
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
 					activeSearchBox={activeSearchBox}
 					selectedOriginBooth={selectedOriginBooth}
 					selectedDestBooth={selectedDestBooth}
-					categories={categories}
-					selectedCategory={selectedCategory}
 					onPathFind={highlightPath}
 					onOriginSearchChange={setOriginSearchTerm}
 					onDestSearchChange={setDestSearchTerm}
 					onSearchBoxChange={setActiveSearchBox}
 					onOriginSelect={setSelectedOriginBooth}
 					onDestSelect={setSelectedDestBooth}
-					setSelectedCategory={setSelectedCategory}
 				/>
 			</div>
 			{/* Action buttons */}

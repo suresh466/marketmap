@@ -19,15 +19,12 @@ interface BoothListProps {
 	activeSearchBox: string;
 	selectedOriginBooth: string | null;
 	selectedDestBooth: string | null;
-	categories: string[];
-	selectedCategory: string;
 	onPathFind: (path: string[]) => void;
 	onOriginSearchChange: Dispatch<SetStateAction<string>>;
 	onDestSearchChange: Dispatch<SetStateAction<string>>;
 	onSearchBoxChange: Dispatch<SetStateAction<"origin" | "dest">>;
 	onOriginSelect: Dispatch<SetStateAction<string | null>>;
 	onDestSelect: Dispatch<SetStateAction<string | null>>;
-	setSelectedCategory: Dispatch<SetStateAction<string>>;
 }
 
 export const BoothList = ({
@@ -37,16 +34,14 @@ export const BoothList = ({
 	activeSearchBox,
 	selectedOriginBooth,
 	selectedDestBooth,
-	categories,
-	selectedCategory,
 	onPathFind,
 	onOriginSearchChange,
 	onDestSearchChange,
 	onSearchBoxChange,
 	onOriginSelect,
 	onDestSelect,
-	setSelectedCategory,
 }: BoothListProps) => {
+	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const originInputRef = useRef<HTMLInputElement>(null);
 	const boothListRef = useRef<HTMLDivElement>(null);
 
@@ -61,9 +56,11 @@ export const BoothList = ({
 			onDestSearchChange(boothLabel);
 		}
 	};
-	const handleCategoryChange = (category: string) => {
-		setSelectedCategory(category);
-	};
+
+	const categories = [
+		"all",
+		...new Set(booths.map((booth) => booth.category)),
+	].filter(Boolean);
 
 	// Focus origin input when booth list expands and origin is not selected
 	useEffect(() => {
@@ -153,20 +150,20 @@ export const BoothList = ({
 		onDestSelect,
 	]);
 
-	const filteredBooths = booths.filter(
-		(booth) =>
-			booth.shape_type !== "diamond" &&
-			booth.shape_type !== "ellipse" &&
-			(selectedCategory === "All" || booth.category === selectedCategory) &&
-			booth.label
-				.toLowerCase()
-				.includes(
-					(activeSearchBox === "origin"
-						? originSearchTerm
-						: destSearchTerm
-					).toLowerCase(),
-				),
-	);
+	const filteredBooths = booths.filter((booth) => {
+		const isValidShape = ["rectangle", "hexagon"].includes(booth.shape_type);
+
+		const matchesCategory =
+			selectedCategory === "all" || booth.category === selectedCategory;
+
+		const searchTerm = (
+			activeSearchBox === "origin" ? originSearchTerm : destSearchTerm
+		).toLowerCase();
+
+		const matchesSearch = booth.label.toLowerCase().includes(searchTerm);
+
+		return isValidShape && matchesCategory && matchesSearch;
+	});
 
 	return (
 		<>
@@ -240,7 +237,7 @@ export const BoothList = ({
 						<CategoryButtons
 							categories={categories}
 							selectedCategory={selectedCategory}
-							onCategoryChange={handleCategoryChange}
+							onCategoryChange={setSelectedCategory}
 						/>
 					</div>
 
