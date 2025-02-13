@@ -31,5 +31,5 @@ export const useGraph = () => {
 		cyRef.current.getElementById(path[path.length - 1]).addClass("highlighted");
 	}, []);
 
-	return { cy: cyRef.current, initCyRef, highlightPath };
+	return { cy: cyRef, initCyRef, highlightPath };
 };

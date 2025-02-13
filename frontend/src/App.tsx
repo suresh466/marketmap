@@ -64,11 +64,11 @@ function App() {
 	};
 
 	const handleFitView = () => {
-		cy?.fit();
+		cy.current?.fit();
 	};
 
 	useEffect(() => {
-		if (!cy) {
+		if (!cy.current) {
 			console.error("cy is not initialized");
 			return;
 		}
@@ -76,9 +76,13 @@ function App() {
 		fetch("/api/graph")
 			.then((response) => response.json())
 			.then((data) => {
-				cy.elements().remove();
-				cy.add(data);
-				cy.fit();
+				if (!cy.current) {
+					console.error("cy is null on fetch");
+					return;
+				}
+				cy.current.elements().remove();
+				cy.current.add(data);
+				cy.current.fit();
 			})
 			.catch((error) => console.error("Error loading graph:", error));
 	}, [cy]);
