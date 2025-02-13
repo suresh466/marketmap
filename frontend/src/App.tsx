@@ -8,16 +8,8 @@ import { FitViewButton } from "./components/controls/FitViewButton";
 import { PathResetButton } from "./components/controls/ResetGraphButton";
 import { ShareButton } from "./components/controls/ShareButton";
 
-interface Booth {
-	id: string;
-	label: string;
-	shape_type: string;
-	category: string;
-}
-
 function App() {
 	const { cy, initCyRef, highlightPath } = useGraph();
-	const [booths, setBooths] = useState<Booth[]>([]);
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
 		"origin",
 	);
@@ -87,19 +79,11 @@ function App() {
 			.catch((error) => console.error("Error loading graph:", error));
 	}, [cy]);
 
-	useEffect(() => {
-		fetch("/api/booths")
-			.then((response) => response.json())
-			.then(setBooths)
-			.catch(console.error);
-	}, []);
-
 	return (
 		<main className="h-screen overflow-hidden relative">
 			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
 				{/* Search controls overlay */}
 				<BoothList
-					booths={booths}
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
 					activeSearchBox={activeSearchBox}

@@ -13,7 +13,6 @@ interface Booth {
 }
 
 interface BoothListProps {
-	booths: Booth[];
 	originSearchTerm: string;
 	destSearchTerm: string;
 	activeSearchBox: string;
@@ -28,7 +27,6 @@ interface BoothListProps {
 }
 
 export const BoothList = ({
-	booths,
 	originSearchTerm,
 	destSearchTerm,
 	activeSearchBox,
@@ -41,6 +39,7 @@ export const BoothList = ({
 	onOriginSelect,
 	onDestSelect,
 }: BoothListProps) => {
+	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const originInputRef = useRef<HTMLInputElement>(null);
 	const boothListRef = useRef<HTMLDivElement>(null);
@@ -61,6 +60,13 @@ export const BoothList = ({
 		"all",
 		...new Set(booths.map((booth) => booth.category)),
 	].filter(Boolean);
+
+	useEffect(() => {
+		fetch("/api/booths")
+			.then((response) => response.json())
+			.then(setBooths)
+			.catch(console.error);
+	}, []);
 
 	// Focus origin input when booth list expands and origin is not selected
 	useEffect(() => {
