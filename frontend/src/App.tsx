@@ -4,11 +4,13 @@ import { Graph } from "./components/Graph";
 import { useGraph } from "./hooks/useGraph";
 import "./styles/Graph.css";
 
+import type { ElementsDefinition } from "cytoscape";
 import { FitViewButton } from "./components/controls/FitViewButton";
 import { PathResetButton } from "./components/controls/ResetGraphButton";
 import { ShareButton } from "./components/controls/ShareButton";
 
 function App() {
+	const [graphData, setGraphData] = useState<ElementsDefinition | null>(null);
 	const { cy, initCyRef, highlightPath } = useGraph();
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
 		"origin",
@@ -36,6 +38,16 @@ function App() {
 		setSelectedDestBooth(booth);
 	}
 
+	useEffect(() => {
+		fetch("/api/graph")
+			.then((response) => response.json())
+			.then((data) => {
+				setGraphData(data);
+				// setBooths(data.nodes);
+			})
+			.catch((error) => console.error("Error loading graph Data:", error));
+	}, []);
+
 	// Sync state to URL
 	useEffect(() => {
 		const params = new URLSearchParams();
@@ -59,31 +71,12 @@ function App() {
 		cy.current?.fit();
 	};
 
-	useEffect(() => {
-		if (!cy.current) {
-			console.error("cy is not initialized");
-			return;
-		}
-
-		fetch("/api/graph")
-			.then((response) => response.json())
-			.then((data) => {
-				if (!cy.current) {
-					console.error("cy is null on fetch");
-					return;
-				}
-				cy.current.elements().remove();
-				cy.current.add(data);
-				cy.current.fit();
-			})
-			.catch((error) => console.error("Error loading graph:", error));
-	}, [cy]);
-
 	return (
 		<main className="h-screen overflow-hidden relative">
+			{/* Search controls overlay */}
 			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
-				{/* Search controls overlay */}
 				<BoothList
+					// booths={booths}
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
 					activeSearchBox={activeSearchBox}
@@ -108,6 +101,7 @@ function App() {
 			{/* Graph */}
 			<div className="h-full w-full p-1">
 				<Graph
+					graphData={graphData}
 					initCyRef={initCyRef}
 					onImHere={handleImHere}
 					onGetHere={handleGetHere}

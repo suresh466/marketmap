@@ -1,4 +1,5 @@
 import cytoscape from "cytoscape";
+import type { ElementsDefinition } from "cytoscape";
 import { useEffect, useRef, useState } from "react";
 import "../styles/Graph.css";
 
@@ -11,12 +12,18 @@ interface NodePopupData {
 }
 
 interface GraphProps {
+	graphData: ElementsDefinition | null;
 	initCyRef: (instance: cytoscape.Core) => void;
 	onGetHere: (booth: string) => void;
 	onImHere: (booth: string) => void;
 }
 
-export const Graph = ({ initCyRef, onGetHere, onImHere }: GraphProps) => {
+export const Graph = ({
+	graphData,
+	initCyRef,
+	onGetHere,
+	onImHere,
+}: GraphProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [popupData, setPopupData] = useState<NodePopupData | null>(null);
 
@@ -35,10 +42,14 @@ export const Graph = ({ initCyRef, onGetHere, onImHere }: GraphProps) => {
 	}, [popupData]);
 
 	useEffect(() => {
-		if (!containerRef.current) return;
+		if (!containerRef.current) {
+			console.error("containerRef.current is null");
+			return;
+		}
 
 		const cy = cytoscape({
 			container: containerRef.current,
+			elements: graphData || [], // graphdata is not set until apps effect runs later
 			minZoom: 0.1,
 			maxZoom: 2,
 			wheelSensitivity: 0.1,
@@ -147,7 +158,7 @@ export const Graph = ({ initCyRef, onGetHere, onImHere }: GraphProps) => {
 		return () => {
 			cy.destroy();
 		};
-	}, [initCyRef]);
+	}, [initCyRef, graphData]);
 
 	return (
 		<>
