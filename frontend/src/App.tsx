@@ -10,6 +10,7 @@ import { PathResetButton } from "./components/controls/ResetGraphButton";
 import { ShareButton } from "./components/controls/ShareButton";
 
 function App() {
+	const [graphReady, setGraphReady] = useState(false);
 	const [graphData, setGraphData] = useState<ElementsDefinition | null>(null);
 	const { cy, initCyRef, highlightPath } = useGraph();
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
@@ -76,6 +77,7 @@ function App() {
 			{/* Search controls overlay */}
 			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
 				<BoothList
+					graphReady={graphReady}
 					// booths={booths}
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
@@ -101,6 +103,7 @@ function App() {
 			{/* Graph */}
 			<div className="h-full w-full p-1">
 				<Graph
+					onGraphReady={setGraphReady}
 					graphData={graphData}
 					initCyRef={initCyRef}
 					onImHere={handleImHere}

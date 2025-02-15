@@ -13,6 +13,7 @@ interface Booth {
 }
 
 interface BoothListProps {
+	graphReady: boolean;
 	originSearchTerm: string;
 	destSearchTerm: string;
 	activeSearchBox: string;
@@ -27,6 +28,7 @@ interface BoothListProps {
 }
 
 export const BoothList = ({
+	graphReady,
 	originSearchTerm,
 	destSearchTerm,
 	activeSearchBox,
@@ -110,6 +112,7 @@ export const BoothList = ({
 	}, [isBoothListExpanded]);
 
 	useEffect(() => {
+		if (!graphReady) return;
 		if (!originSearchTerm || !destSearchTerm) {
 			if (!originSearchTerm) onOriginSelect(null);
 			if (!destSearchTerm) onDestSelect(null);
@@ -147,6 +150,7 @@ export const BoothList = ({
 			return () => controller.abort();
 		}
 	}, [
+		graphReady,
 		selectedOriginBooth,
 		selectedDestBooth,
 		originSearchTerm,

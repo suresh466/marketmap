@@ -12,6 +12,7 @@ interface NodePopupData {
 }
 
 interface GraphProps {
+	onGraphReady: (bool: boolean) => void;
 	graphData: ElementsDefinition | null;
 	initCyRef: (instance: cytoscape.Core) => void;
 	onGetHere: (booth: string) => void;
@@ -19,6 +20,7 @@ interface GraphProps {
 }
 
 export const Graph = ({
+	onGraphReady,
 	graphData,
 	initCyRef,
 	onGetHere,
@@ -42,8 +44,7 @@ export const Graph = ({
 	}, [popupData]);
 
 	useEffect(() => {
-		if (!containerRef.current) {
-			console.error("containerRef.current is null");
+		if (!containerRef.current || !graphData) {
 			return;
 		}
 
@@ -154,11 +155,16 @@ export const Graph = ({
 		});
 
 		initCyRef(cy);
+		cy.ready(() => {
+			onGraphReady(true);
+			cy.fit();
+		});
 
 		return () => {
+			onGraphReady(false);
 			cy.destroy();
 		};
-	}, [initCyRef, graphData]);
+	}, [initCyRef, graphData, onGraphReady]);
 
 	return (
 		<>
