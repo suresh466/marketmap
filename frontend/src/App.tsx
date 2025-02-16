@@ -9,6 +9,16 @@ import { FitViewButton } from "./components/controls/FitViewButton";
 import { PathResetButton } from "./components/controls/ResetGraphButton";
 import { ShareButton } from "./components/controls/ShareButton";
 
+interface Booth {
+	data: {
+		id: string;
+		label: string;
+		name: string;
+		category: string;
+		shape_type: string;
+	};
+}
+
 function App() {
 	const [graphReady, setGraphReady] = useState(false);
 	const [graphData, setGraphData] = useState<ElementsDefinition | null>(null);
@@ -44,7 +54,6 @@ function App() {
 			.then((response) => response.json())
 			.then((data) => {
 				setGraphData(data);
-				// setBooths(data.nodes);
 			})
 			.catch((error) => console.error("Error loading graph Data:", error));
 	}, []);
@@ -78,7 +87,7 @@ function App() {
 			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
 				<BoothList
 					graphReady={graphReady}
-					// booths={booths}
+					booths={(graphData?.nodes as Booth[]) ?? null}
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
 					activeSearchBox={activeSearchBox}

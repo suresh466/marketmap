@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { CategoryButtons } from "./controls/CategoryButtons";
 
@@ -6,13 +6,17 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Booth {
-	id: string;
-	label: string;
-	shape_type: string;
-	category: string;
+	data: {
+		id: string;
+		label: string;
+		name: string;
+		category: string;
+		shape_type: string;
+	};
 }
 
 interface BoothListProps {
+	booths: Booth[] | null;
 	graphReady: boolean;
 	originSearchTerm: string;
 	destSearchTerm: string;
@@ -28,6 +32,7 @@ interface BoothListProps {
 }
 
 export const BoothList = ({
+	booths,
 	graphReady,
 	originSearchTerm,
 	destSearchTerm,
@@ -41,7 +46,6 @@ export const BoothList = ({
 	onOriginSelect,
 	onDestSelect,
 }: BoothListProps) => {
-	const [booths, setBooths] = useState<Booth[]>([]);
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const originInputRef = useRef<HTMLInputElement>(null);
 	const boothListRef = useRef<HTMLDivElement>(null);
@@ -58,17 +62,36 @@ export const BoothList = ({
 		}
 	};
 
-	const categories = [
-		"all",
-		...new Set(booths.map((booth) => booth.category)),
-	].filter(Boolean);
+	const uniqueCategories = useMemo(
+		() =>
+			booths
+				? [
+						"all",
+						...new Set(booths.map((booth) => booth.data.category)),
+					].filter(Boolean)
+				: [],
+		[booths],
+	);
 
-	useEffect(() => {
-		fetch("/api/booths")
-			.then((response) => response.json())
-			.then(setBooths)
-			.catch(console.error);
-	}, []);
+	const filteredBooths =
+		booths?.filter((booth) => {
+			const isValidShape = ["rectangle", "hexagon"].includes(
+				booth.data.shape_type,
+			);
+
+			const matchesCategory =
+				selectedCategory === "all" || booth.data.category === selectedCategory;
+
+			const searchTerm = (
+				activeSearchBox === "origin" ? originSearchTerm : destSearchTerm
+			).toLowerCase();
+
+			const matchesSearch = booth.data.label
+				?.toLowerCase()
+				.includes(searchTerm);
+
+			return isValidShape && matchesCategory && matchesSearch;
+		}) ?? [];
 
 	// Focus origin input when booth list expands and origin is not selected
 	useEffect(() => {
@@ -160,21 +183,6 @@ export const BoothList = ({
 		onDestSelect,
 	]);
 
-	const filteredBooths = booths.filter((booth) => {
-		const isValidShape = ["rectangle", "hexagon"].includes(booth.shape_type);
-
-		const matchesCategory =
-			selectedCategory === "all" || booth.category === selectedCategory;
-
-		const searchTerm = (
-			activeSearchBox === "origin" ? originSearchTerm : destSearchTerm
-		).toLowerCase();
-
-		const matchesSearch = booth.label.toLowerCase().includes(searchTerm);
-
-		return isValidShape && matchesCategory && matchesSearch;
-	});
-
 	return (
 		<>
 			{/* Dummy search input when boothlist collapsed */}
@@ -245,7 +253,7 @@ export const BoothList = ({
 					{/* Category filters */}
 					<div className="px-4 py-3 border-b border-gray-100">
 						<CategoryButtons
-							categories={categories}
+							categories={uniqueCategories}
 							selectedCategory={selectedCategory}
 							onCategoryChange={setSelectedCategory}
 						/>
@@ -261,32 +269,35 @@ export const BoothList = ({
 						) : (
 							<ul className="divide-y divide-gray-100">
 								{filteredBooths.map((booth) => (
-									<li key={booth.id} className="transition-colors duration-200">
+									<li
+										key={booth.data.id}
+										className="transition-colors duration-200"
+									>
 										<button
 											type="button"
-											onClick={() => handleBoothClick(booth.label)}
+											onClick={() => handleBoothClick(booth.data.label)}
 											className={`
                       w-full px-4 py-3 text-left
                       transition-all duration-200
                       hover:bg-amber-50
-                      ${selectedDestBooth === booth.label ? "bg-amber-50" : "bg-white"}
+                      ${selectedDestBooth === booth.data.label ? "bg-amber-50" : "bg-white"}
                     `}
 										>
 											<div
 												className={`
                         font-medium
-                        ${selectedDestBooth === booth.label ? "text-amber-900" : "text-gray-900"}
+                        ${selectedDestBooth === booth.data.label ? "text-amber-900" : "text-gray-900"}
                       `}
 											>
-												{booth.label}
+												{booth.data.label}
 											</div>
 											<div
 												className={`
                         text-sm
-                        ${selectedDestBooth === booth.label ? "text-amber-700" : "text-gray-500"}
+                        ${selectedDestBooth === booth.data.label ? "text-amber-700" : "text-gray-500"}
                       `}
 											>
-												{booth.category}
+												{booth.data.category}
 											</div>
 										</button>
 									</li>
