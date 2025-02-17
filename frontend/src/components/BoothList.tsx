@@ -136,11 +136,6 @@ export const BoothList = ({
 
 	useEffect(() => {
 		if (!graphReady) return;
-		if (!originSearchTerm || !destSearchTerm) {
-			if (!originSearchTerm) onOriginSelect(null);
-			if (!destSearchTerm) onDestSelect(null);
-			return;
-		}
 
 		if (selectedOriginBooth && selectedDestBooth) {
 			const controller = new AbortController();
@@ -158,30 +153,19 @@ export const BoothList = ({
 						setIsBoothListExpanded(false);
 					}
 
-					// todo: is this check necessary here
-					// if (cy) onPathFind(data.path);
 					onPathFind(data.path);
 				})
 				.catch((error) => {
 					if (error.name !== "AbortError") {
 						console.error("Error fetching path:", error);
-						onDestSelect(null);
 						onPathFind([]);
 					}
 				});
 
 			return () => controller.abort();
 		}
-	}, [
-		graphReady,
-		selectedOriginBooth,
-		selectedDestBooth,
-		originSearchTerm,
-		destSearchTerm,
-		onPathFind,
-		onOriginSelect,
-		onDestSelect,
-	]);
+		onPathFind([]);
+	}, [graphReady, selectedOriginBooth, selectedDestBooth, onPathFind]);
 
 	return (
 		<>
@@ -218,7 +202,10 @@ export const BoothList = ({
 							type="search"
 							placeholder="Search Origin"
 							value={originSearchTerm}
-							onChange={(e) => onOriginSearchChange(e.target.value)}
+							onChange={(e) => {
+								if (e.target.value === "") onOriginSelect(null);
+								onOriginSearchChange(e.target.value);
+							}}
 							onFocus={() => onSearchBoxChange("origin")}
 							className="w-full px-4 py-2.5
               bg-gray-50
@@ -237,7 +224,10 @@ export const BoothList = ({
 							type="search"
 							placeholder="Search Destination"
 							value={destSearchTerm}
-							onChange={(e) => onDestSearchChange(e.target.value)}
+							onChange={(e) => {
+								if (e.target.value === "") onDestSelect(null);
+								onDestSearchChange(e.target.value);
+							}}
 							onFocus={() => onSearchBoxChange("dest")}
 							className="w-full px-4 py-2.5
               bg-gray-50
