@@ -110,11 +110,9 @@ export const BoothList = ({
 				}
 			};
 
-			document.addEventListener("click", handleClickOutside);
-			document.addEventListener("touchend", handleClickOutside);
+			document.addEventListener("pointerdown", handleClickOutside);
 			return () => {
-				document.removeEventListener("click", handleClickOutside);
-				document.removeEventListener("touchend", handleClickOutside);
+				document.removeEventListener("pointerdown", handleClickOutside);
 			};
 		}
 	}, [isBoothListExpanded]);
