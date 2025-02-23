@@ -74,6 +74,8 @@ function App() {
 	const handlePathReset = () => {
 		setOriginSearchTerm("");
 		setDestSearchTerm("");
+		setSelectedOriginBooth(null);
+		setSelectedDestBooth(null);
 		setActiveSearchBox("origin");
 	};
 
