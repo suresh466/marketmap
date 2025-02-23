@@ -61,15 +61,39 @@ function App() {
 	// Sync state to URL
 	useEffect(() => {
 		const params = new URLSearchParams();
-		if (selectedOriginBooth) params.set("from", selectedOriginBooth);
-		if (selectedDestBooth) params.set("to", selectedDestBooth);
+		const hasOrigin = selectedOriginBooth !== null;
+		const hasDest = selectedDestBooth !== null;
+
+		if (hasOrigin) params.set("from", selectedOriginBooth);
+		if (hasDest) params.set("to", selectedDestBooth);
 
 		const newUrl = params.toString()
 			? `${window.location.pathname}?${params.toString()}`
 			: window.location.pathname;
 
-		window.history.replaceState({}, "", newUrl);
+		const isBaseUrl = window.history.length <= 2;
+		const hasSelection = hasOrigin || hasDest;
+
+		// This allows the user to go to the base app state
+		// no matter how many times origin and destination are changed
+		if (isBaseUrl && hasSelection) {
+			window.history.pushState({}, "", newUrl);
+		} else {
+			window.history.replaceState({}, "", newUrl);
+		}
 	}, [selectedOriginBooth, selectedDestBooth]);
+
+	useEffect(() => {
+		const handlePopState = () => {
+			setOriginSearchTerm("");
+			setDestSearchTerm("");
+			setSelectedOriginBooth(null);
+			setSelectedDestBooth(null);
+			setActiveSearchBox("origin");
+		};
+		window.addEventListener("popstate", handlePopState);
+		return () => removeEventListener("popstate", handlePopState);
+	}, []);
 
 	const handlePathReset = () => {
 		setOriginSearchTerm("");

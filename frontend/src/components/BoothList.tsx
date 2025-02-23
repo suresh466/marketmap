@@ -117,21 +117,6 @@ export const BoothList = ({
 		}
 	}, [isBoothListExpanded]);
 
-	// Enables back button to collapse expanded list
-	useEffect(() => {
-		if (isBoothListExpanded) {
-			// Add history entry when expanded
-			window.history.pushState({ expanded: true }, "");
-
-			const handlePopState = () => {
-				setIsBoothListExpanded(false);
-			};
-
-			window.addEventListener("popstate", handlePopState);
-			return () => window.removeEventListener("popstate", handlePopState);
-		}
-	}, [isBoothListExpanded]);
-
 	useEffect(() => {
 		if (!graphReady) return;
 

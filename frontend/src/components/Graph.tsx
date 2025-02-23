@@ -29,20 +29,6 @@ export const Graph = ({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [popupData, setPopupData] = useState<NodePopupData | null>(null);
 
-	// Enables back button to close a popup
-	useEffect(() => {
-		if (popupData) {
-			window.history.pushState({ popup: true }, "");
-
-			const handlePopState = () => {
-				setPopupData(null);
-			};
-
-			window.addEventListener("popstate", handlePopState);
-			return () => window.removeEventListener("popstate", handlePopState);
-		}
-	}, [popupData]);
-
 	useEffect(() => {
 		if (!containerRef.current || !graphData) {
 			return;
