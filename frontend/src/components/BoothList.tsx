@@ -16,6 +16,7 @@ interface Booth {
 }
 
 interface BoothListProps {
+	isBoothListExpanded: boolean;
 	booths: Booth[] | null;
 	graphReady: boolean;
 	originSearchTerm: string;
@@ -23,6 +24,7 @@ interface BoothListProps {
 	activeSearchBox: string;
 	selectedOriginBooth: string | null;
 	selectedDestBooth: string | null;
+	onBoothListToggle: Dispatch<SetStateAction<boolean>>;
 	onPathFind: (path: string[]) => void;
 	onOriginSearchChange: Dispatch<SetStateAction<string>>;
 	onDestSearchChange: Dispatch<SetStateAction<string>>;
@@ -32,6 +34,7 @@ interface BoothListProps {
 }
 
 export const BoothList = ({
+	isBoothListExpanded,
 	booths,
 	graphReady,
 	originSearchTerm,
@@ -39,6 +42,7 @@ export const BoothList = ({
 	activeSearchBox,
 	selectedOriginBooth,
 	selectedDestBooth,
+	onBoothListToggle,
 	onPathFind,
 	onOriginSearchChange,
 	onDestSearchChange,
@@ -49,8 +53,6 @@ export const BoothList = ({
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const originInputRef = useRef<HTMLInputElement>(null);
 	const boothListRef = useRef<HTMLDivElement>(null);
-
-	const [isBoothListExpanded, setIsBoothListExpanded] = useState(false);
 
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
@@ -106,7 +108,7 @@ export const BoothList = ({
 			const handleClickOutside = (event: MouseEvent | TouchEvent) => {
 				const target = event.target as Node;
 				if (boothListRef.current && !boothListRef.current.contains(target)) {
-					setIsBoothListExpanded(false);
+					window.history.back();
 				}
 			};
 
@@ -132,11 +134,10 @@ export const BoothList = ({
 				.then((response) => response.json())
 				.then((data) => {
 					// Only collapse on mobile screens
-					if (window.matchMedia("(max-width: 767px)").matches) {
-						setIsBoothListExpanded(false);
-					}
-
 					onPathFind(data.path);
+					if (window.matchMedia("(max-width: 767px)").matches) {
+						window.history.back();
+					}
 				})
 				.catch((error) => {
 					if (error.name !== "AbortError") {
@@ -162,7 +163,10 @@ export const BoothList = ({
 					<input
 						type="search"
 						placeholder="Search for a booth..."
-						onFocus={() => setIsBoothListExpanded(true)}
+						onFocus={() => {
+							window.history.pushState({}, "", "");
+							onBoothListToggle(true);
+						}}
 						className="w-full pl-10 px-4 py-3
         bg-gray-50
         border border-gray-200

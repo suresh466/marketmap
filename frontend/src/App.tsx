@@ -20,6 +20,7 @@ interface Booth {
 }
 
 function App() {
+	const [isBoothListExpanded, setIsBoothListExpanded] = useState(false);
 	const [graphReady, setGraphReady] = useState(false);
 	const [graphData, setGraphData] = useState<ElementsDefinition | null>(null);
 	const { cy, initCyRef, highlightPath } = useGraph();
@@ -85,15 +86,18 @@ function App() {
 
 	useEffect(() => {
 		const handlePopState = () => {
-			setOriginSearchTerm("");
-			setDestSearchTerm("");
-			setSelectedOriginBooth(null);
-			setSelectedDestBooth(null);
-			setActiveSearchBox("origin");
+			if (isBoothListExpanded) setIsBoothListExpanded(false);
+			else {
+				setOriginSearchTerm("");
+				setDestSearchTerm("");
+				setSelectedOriginBooth(null);
+				setSelectedDestBooth(null);
+				setActiveSearchBox("origin");
+			}
 		};
 		window.addEventListener("popstate", handlePopState);
 		return () => removeEventListener("popstate", handlePopState);
-	}, []);
+	}, [isBoothListExpanded]);
 
 	const handlePathReset = () => {
 		setOriginSearchTerm("");
@@ -113,12 +117,14 @@ function App() {
 			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
 				<BoothList
 					graphReady={graphReady}
+					isBoothListExpanded={isBoothListExpanded}
 					booths={(graphData?.nodes as Booth[]) ?? null}
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
 					activeSearchBox={activeSearchBox}
 					selectedOriginBooth={selectedOriginBooth}
 					selectedDestBooth={selectedDestBooth}
+					onBoothListToggle={setIsBoothListExpanded}
 					onPathFind={highlightPath}
 					onOriginSearchChange={setOriginSearchTerm}
 					onDestSearchChange={setDestSearchTerm}
