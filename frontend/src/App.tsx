@@ -31,7 +31,6 @@ function App() {
 	const params = new URLSearchParams(window.location.search);
 	const from = params.get("from");
 	const to = params.get("to");
-
 	// Initialize from URL params
 	const [originSearchTerm, setOriginSearchTerm] = useState(from || "");
 	const [destSearchTerm, setDestSearchTerm] = useState(to || "");
@@ -49,6 +48,12 @@ function App() {
 		setDestSearchTerm(booth);
 		setSelectedDestBooth(booth);
 	}
+	// cleanup url parameters after selected booth initialization
+	useEffect(() => {
+		if (window.location.search) {
+			window.history.replaceState({}, "", window.location.pathname);
+		}
+	}, []);
 
 	useEffect(() => {
 		fetch("/api/graph")
@@ -59,41 +64,9 @@ function App() {
 			.catch((error) => console.error("Error loading graph Data:", error));
 	}, []);
 
-	// Sync state to URL
-	useEffect(() => {
-		const params = new URLSearchParams();
-		const hasOrigin = selectedOriginBooth !== null;
-		const hasDest = selectedDestBooth !== null;
-
-		if (hasOrigin) params.set("from", selectedOriginBooth);
-		if (hasDest) params.set("to", selectedDestBooth);
-
-		const newUrl = params.toString()
-			? `${window.location.pathname}?${params.toString()}`
-			: window.location.pathname;
-
-		const isBaseUrl = window.history.length <= 2;
-		const hasSelection = hasOrigin || hasDest;
-
-		// This allows the user to go to the base app state
-		// no matter how many times origin and destination are changed
-		if (isBaseUrl && hasSelection) {
-			window.history.pushState({}, "", newUrl);
-		} else {
-			window.history.replaceState({}, "", newUrl);
-		}
-	}, [selectedOriginBooth, selectedDestBooth]);
-
 	useEffect(() => {
 		const handlePopState = () => {
 			if (isBoothListExpanded) setIsBoothListExpanded(false);
-			else {
-				setOriginSearchTerm("");
-				setDestSearchTerm("");
-				setSelectedOriginBooth(null);
-				setSelectedDestBooth(null);
-				setActiveSearchBox("origin");
-			}
 		};
 		window.addEventListener("popstate", handlePopState);
 		return () => removeEventListener("popstate", handlePopState);
@@ -136,7 +109,11 @@ function App() {
 			{/* Action buttons */}
 			{/* todo: fix the button not visible with bottom-32 maybe look into safe-area-insets */}
 			<div className="absolute right-8 z-10 flex gap-3 md:top-6 bottom-32 md:bottom-auto">
-				<ShareButton />
+				<ShareButton
+					selectedOriginBooth={selectedOriginBooth}
+					selectedDestBooth={selectedDestBooth}
+				/>
+
 				<PathResetButton onPathReset={handlePathReset} />
 				<FitViewButton onFitView={handleFitView} />
 			</div>

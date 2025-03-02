@@ -3,11 +3,22 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import copy from "clipboard-copy";
 import { useState } from "react";
 
-export const ShareButton = () => {
+interface ShareButtonProps {
+	selectedOriginBooth: string | null;
+	selectedDestBooth: string | null;
+}
+
+export const ShareButton = ({
+	selectedOriginBooth,
+	selectedDestBooth,
+}: ShareButtonProps) => {
 	const [showToast, setShowToast] = useState(false);
 
 	const handleShare = async () => {
-		const url = window.location.href;
+		const params = new URLSearchParams();
+		params.set("from", selectedOriginBooth ?? "null");
+		params.set("to", selectedDestBooth ?? "null");
+		const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
 
 		try {
 			await copy(url);
