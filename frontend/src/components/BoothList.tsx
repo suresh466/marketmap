@@ -136,7 +136,7 @@ export const BoothList = ({
 					// Only collapse on mobile screens
 					onPathFind(data.path);
 					if (window.matchMedia("(max-width: 767px)").matches) {
-						window.history.back();
+						if (isBoothListExpanded) window.history.back();
 					}
 				})
 				.catch((error) => {
