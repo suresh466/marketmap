@@ -1,6 +1,9 @@
 import cytoscape from "cytoscape";
 import type { ElementsDefinition } from "cytoscape";
 import { useEffect, useRef, useState } from "react";
+
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/Graph.css";
 
 interface NodePopupData {
@@ -163,6 +166,15 @@ export const Graph = ({
 			{/* Node popup */}
 			{popupData && (
 				<div className="absolute z-30 bottom-2 inset-x-4 md:inset-auto md:top-6 md:left-6 md:bottom-4 md:w-1/4 bg-white rounded-lg shadow-lg p-5 border border-gray-100">
+					{/* Close button */}
+					<button
+						type="button"
+						onClick={() => setPopupData(null)}
+						className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg border-2 border-white flex items-center justify-center w-8 h-8 transition-all duration-200 transform active:scale-90 focus:outline-none"
+						aria-label="Close popup"
+					>
+						<FontAwesomeIcon icon={faTimes} className="text-sm" />
+					</button>
 					<div className="space-y-3">
 						{/* Booth name */}
 						<h3 className="font-semibold text-gray-900 text-xl text-center">
