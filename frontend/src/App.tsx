@@ -9,6 +9,12 @@ import { FitViewButton } from "./components/controls/FitViewButton";
 import { PathResetButton } from "./components/controls/ResetGraphButton";
 import { ShareButton } from "./components/controls/ShareButton";
 
+interface NodePopupData {
+	label: string;
+	name: string;
+	category: string;
+}
+
 interface Booth {
 	data: {
 		id: string;
@@ -39,14 +45,14 @@ function App() {
 	);
 	const [selectedDestBooth, setSelectedDestBooth] = useState<string | null>(to);
 
-	function handleImHere(booth: string) {
-		setOriginSearchTerm(booth);
-		setSelectedOriginBooth(booth);
+	function handleImHere(booth: NodePopupData) {
+		setOriginSearchTerm(booth.name);
+		setSelectedOriginBooth(booth.label);
 	}
 
-	function handleGetHere(booth: string) {
-		setDestSearchTerm(booth);
-		setSelectedDestBooth(booth);
+	function handleGetHere(booth: NodePopupData) {
+		setDestSearchTerm(booth.name);
+		setSelectedDestBooth(booth.label);
 	}
 	// cleanup url parameters after selected booth initialization
 	useEffect(() => {
@@ -91,7 +97,11 @@ function App() {
 				<BoothList
 					graphReady={graphReady}
 					isBoothListExpanded={isBoothListExpanded}
-					booths={(graphData?.nodes as Booth[]) ?? null}
+					booths={
+						(graphData?.nodes.filter(
+							(node) => node.data?.name && node.data.name !== "booth",
+						) as Booth[]) ?? null
+					}
 					originSearchTerm={originSearchTerm}
 					destSearchTerm={destSearchTerm}
 					activeSearchBox={activeSearchBox}

@@ -7,19 +7,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/Graph.css";
 
 interface NodePopupData {
-	id: string;
 	label: string;
+	name: string;
 	category: string;
-	shape_type: string;
-	dimension: string;
 }
 
 interface GraphProps {
 	onGraphReady: (bool: boolean) => void;
 	graphData: ElementsDefinition | null;
 	initCyRef: (instance: cytoscape.Core) => void;
-	onGetHere: (booth: string) => void;
-	onImHere: (booth: string) => void;
+	onGetHere: (booth: NodePopupData) => void;
+	onImHere: (booth: NodePopupData) => void;
 }
 
 export const Graph = ({
@@ -127,13 +125,10 @@ export const Graph = ({
 
 		cy.on("tap", "node", (e) => {
 			const node = e.target;
-			const dimension = `${node.data("width") / 10}'X${node.data("height") / 10}'`;
 			setPopupData({
-				id: node.id(),
 				label: node.data("label"),
+				name: node.data("name"),
 				category: node.data("category"),
-				shape_type: node.data("shape_type"),
-				dimension: dimension,
 			});
 		});
 
@@ -178,22 +173,14 @@ export const Graph = ({
 					<div className="space-y-3">
 						{/* Booth name */}
 						<h3 className="font-semibold text-gray-900 text-xl text-center">
-							{popupData.label}
+							{popupData.name}
 						</h3>
 
 						{/* Booth details */}
 						<div className="space-y-2 text-sm">
 							<div className="flex items-center justify-between text-gray-600">
-								<span>Type:</span>
-								<span className="font-medium">{popupData.shape_type}</span>
-							</div>
-							<div className="flex items-center justify-between text-gray-600">
-								<span>ID:</span>
-								<span className="font-medium">{popupData.id}</span>
-							</div>
-							<div className="flex items-center justify-between text-gray-600">
-								<span>Dimension:</span>
-								<span className="font-medium">{popupData.dimension}</span>
+								<span>Booth Number:</span>
+								<span className="font-medium">{popupData.label}</span>
 							</div>
 							<div className="flex items-center justify-between text-gray-600">
 								<span>Category:</span>
@@ -206,7 +193,7 @@ export const Graph = ({
 								className="w-full mt-3 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 								onClick={() => {
 									setPopupData(null);
-									onGetHere(popupData.label);
+									onGetHere(popupData);
 								}}
 							>
 								Get Here
@@ -217,7 +204,7 @@ export const Graph = ({
 								className="w-full mt-3 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 								onClick={() => {
 									setPopupData(null);
-									onImHere(popupData.label);
+									onImHere(popupData);
 								}}
 							>
 								I'm Here

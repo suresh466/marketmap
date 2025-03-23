@@ -64,6 +64,13 @@ export const BoothList = ({
 		}
 	};
 
+	const isSelected = (boothLabel: string) => {
+		return (
+			(activeSearchBox === "origin" && selectedOriginBooth === boothLabel) ||
+			(activeSearchBox === "dest" && selectedDestBooth === boothLabel)
+		);
+	};
+
 	const uniqueCategories = useMemo(
 		() =>
 			booths
@@ -88,9 +95,9 @@ export const BoothList = ({
 				activeSearchBox === "origin" ? originSearchTerm : destSearchTerm
 			).toLowerCase();
 
-			const matchesSearch = booth.data.label
-				?.toLowerCase()
-				.includes(searchTerm);
+			const matchesSearch =
+				booth.data.label?.toLowerCase().includes(searchTerm) ||
+				booth.data.name.toLowerCase().includes(searchTerm);
 
 			return isValidShape && matchesCategory && matchesSearch;
 		}) ?? [];
@@ -254,27 +261,29 @@ export const BoothList = ({
 											type="button"
 											onClick={() => handleBoothClick(booth.data.label)}
 											className={`
-                      w-full px-4 py-3 text-left
-                      transition-all duration-200
-                      hover:bg-amber-50
-                      ${selectedDestBooth === booth.data.label ? "bg-amber-50" : "bg-white"}
-                    `}
+		w-full px-4 py-3 text-left
+		transition-all duration-200
+		hover:bg-amber-50
+		${isSelected(booth.data.label) ? "bg-amber-50" : "bg-white"}
+	`}
 										>
 											<div
-												className={`
-                        font-medium
-                        ${selectedDestBooth === booth.data.label ? "text-amber-900" : "text-gray-900"}
-                      `}
+												className={`font-medium ${
+													isSelected(booth.data.label)
+														? "text-amber-900"
+														: "text-gray-900"
+												}`}
 											>
-												{booth.data.label}
+												{booth.data.name}
 											</div>
 											<div
-												className={`
-                        text-sm
-                        ${selectedDestBooth === booth.data.label ? "text-amber-700" : "text-gray-500"}
-                      `}
+												className={`text-sm ${
+													isSelected(booth.data.label)
+														? "text-amber-700"
+														: "text-gray-500"
+												}`}
 											>
-												{booth.data.category}
+												{booth.data.label}
 											</div>
 										</button>
 									</li>
