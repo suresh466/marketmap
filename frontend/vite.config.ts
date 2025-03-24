@@ -6,7 +6,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/api": "http://localhost:8000",
-			"/shortest-path": "http://localhost:8000",
+			"/api/shortest-path": "http://localhost:8000",
 		},
 	},
 });

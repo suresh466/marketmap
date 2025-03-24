@@ -133,7 +133,7 @@ export const BoothList = ({
 			const controller = new AbortController();
 
 			fetch(
-				`/shortest-path/-/${encodeURIComponent(selectedOriginBooth)}/-/${encodeURIComponent(selectedDestBooth)}`,
+				`/api/shortest-path/-/${encodeURIComponent(selectedOriginBooth)}/-/${encodeURIComponent(selectedDestBooth)}`,
 				{
 					signal: controller.signal,
 				},
