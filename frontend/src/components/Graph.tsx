@@ -173,7 +173,7 @@ export const Graph = ({
 					<div className="space-y-3">
 						{/* Booth name */}
 						<h3 className="font-semibold text-gray-900 text-xl text-center">
-							{popupData.name}
+							{popupData.name} ({popupData.label})
 						</h3>
 
 						{/* Booth details */}
