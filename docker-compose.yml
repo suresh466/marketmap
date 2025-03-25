@@ -1,0 +1,20 @@
+services:
+  backend:
+    build: ./backend
+    # restart the container on crashes or if the Docker daemon restarts
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+      - nginx_logs:/var/log/nginx
+    restart: unless-stopped
+
+
+volumes:
+  nginx_logs:
