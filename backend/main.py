@@ -183,3 +183,9 @@ async def get_shortest_path(start_label: str, end_label: str):
     path = nx.shortest_path(G, start_node, end_node, weight="weight")
 
     return {"path": path}
+
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for container orchestration"""
+    return {"status": "healthy", "service": "flea-market-api"}
