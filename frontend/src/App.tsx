@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BoothList } from "./components/BoothList";
 import { Graph } from "./components/Graph";
 import { useGraph } from "./hooks/useGraph";
+import type { Booth } from "./types";
 import "./styles/Graph.css";
 
 import type { ElementsDefinition } from "cytoscape";
@@ -9,21 +10,21 @@ import { FitViewButton } from "./components/controls/FitViewButton";
 import { PathResetButton } from "./components/controls/ResetGraphButton";
 import { ShareButton } from "./components/controls/ShareButton";
 
-interface NodePopupData {
-	label: string;
-	name: string;
-	category: string;
-}
+// interface NodePopupData {
+// 	label: string;
+// 	name: string;
+// 	category: string;
+// }
 
-interface Booth {
-	data: {
-		id: string;
-		label: string;
-		name: string;
-		category: string;
-		shape_type: string;
-	};
-}
+// interface Booth {
+// 	data: {
+// 		id: string;
+// 		label: string;
+// 		name: string;
+// 		category: string;
+// 		shape_type: string;
+// 	};
+// }
 
 function App() {
 	const [isBoothListExpanded, setIsBoothListExpanded] = useState(false);
@@ -45,14 +46,14 @@ function App() {
 	);
 	const [selectedDestBooth, setSelectedDestBooth] = useState<string | null>(to);
 
-	function handleImHere(booth: NodePopupData) {
-		setOriginSearchTerm(booth.name);
-		setSelectedOriginBooth(booth.label);
+	function handleImHere(booth: Booth) {
+		setOriginSearchTerm(booth.data.name);
+		setSelectedOriginBooth(booth.data.label);
 	}
 
-	function handleGetHere(booth: NodePopupData) {
-		setDestSearchTerm(booth.name);
-		setSelectedDestBooth(booth.label);
+	function handleGetHere(booth: Booth) {
+		setDestSearchTerm(booth.data.name);
+		setSelectedDestBooth(booth.data.label);
 	}
 	// cleanup url parameters after selected booth initialization
 	useEffect(() => {

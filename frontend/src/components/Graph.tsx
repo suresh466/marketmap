@@ -1,23 +1,18 @@
 import cytoscape from "cytoscape";
 import type { ElementsDefinition } from "cytoscape";
 import { useEffect, useRef, useState } from "react";
+import type { Booth } from "../types";
 
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../styles/Graph.css";
 
-interface NodePopupData {
-	label: string;
-	name: string;
-	category: string;
-}
-
 interface GraphProps {
 	onGraphReady: (bool: boolean) => void;
 	graphData: ElementsDefinition | null;
 	initCyRef: (instance: cytoscape.Core) => void;
-	onGetHere: (booth: NodePopupData) => void;
-	onImHere: (booth: NodePopupData) => void;
+	onGetHere: (booth: Booth) => void;
+	onImHere: (booth: Booth) => void;
 }
 
 export const Graph = ({
@@ -28,7 +23,8 @@ export const Graph = ({
 	onImHere,
 }: GraphProps) => {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const [popupData, setPopupData] = useState<NodePopupData | null>(null);
+	// const [popupData, setPopupData] = useState<NodePopupData | null>(null);
+	const [booth, setBooth] = useState<Booth | null>(null);
 
 	useEffect(() => {
 		if (!containerRef.current || !graphData) {
@@ -148,16 +144,12 @@ export const Graph = ({
 
 		cy.on("tap", "node", (e) => {
 			const node = e.target;
-			setPopupData({
-				label: node.data("label"),
-				name: node.data("name"),
-				category: node.data("category"),
-			});
+			setBooth({ data: node.data() });
 		});
 
 		cy.on("tap", (e) => {
 			if (e.target === cy) {
-				setPopupData(null);
+				setBooth(null);
 			}
 		});
 
@@ -182,12 +174,12 @@ export const Graph = ({
 			/>
 
 			{/* Node popup */}
-			{popupData && (
+			{booth && (
 				<div className="absolute inset-x-4 bottom-2 z-30 rounded-lg border border-gray-100 bg-white p-5 shadow-lg md:inset-auto md:bottom-4 md:left-6 md:top-6 md:w-1/4">
 					{/* Close button */}
 					<button
 						type="button"
-						onClick={() => setPopupData(null)}
+						onClick={() => setBooth(null)}
 						className="absolute -right-3 -top-3 flex h-8 w-8 transform items-center justify-center rounded-full border-2 border-white bg-red-500 p-2 text-white shadow-lg transition-all duration-200 hover:bg-red-600 focus:outline-none active:scale-90"
 						aria-label="Close popup"
 					>
@@ -196,18 +188,18 @@ export const Graph = ({
 					<div className="space-y-3">
 						{/* Booth name */}
 						<h3 className="text-center text-xl font-semibold text-gray-900">
-							{popupData.name} ({popupData.label})
+							{booth.data.name} ({booth.data.label})
 						</h3>
 
 						{/* Booth details */}
 						<div className="space-y-2 text-sm">
 							<div className="flex items-center justify-between text-gray-600">
 								<span>Booth Number:</span>
-								<span className="font-medium">{popupData.label}</span>
+								<span className="font-medium">{booth.data.label}</span>
 							</div>
 							<div className="flex items-center justify-between text-gray-600">
 								<span>Category:</span>
-								<span className="font-medium">{popupData.category}</span>
+								<span className="font-medium">{booth.data.category}</span>
 							</div>
 
 							{/* Get here button */}
@@ -215,8 +207,8 @@ export const Graph = ({
 								type="button"
 								className="mt-3 w-full rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 								onClick={() => {
-									setPopupData(null);
-									onGetHere(popupData);
+									setBooth(null);
+									onGetHere(booth);
 								}}
 							>
 								Get Here
@@ -226,8 +218,8 @@ export const Graph = ({
 								type="button"
 								className="mt-3 w-full rounded-lg bg-teal-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 								onClick={() => {
-									setPopupData(null);
-									onImHere(popupData);
+									setBooth(null);
+									onImHere(booth);
 								}}
 							>
 								I'm Here

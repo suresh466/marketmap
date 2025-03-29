@@ -1,19 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
+import type { Booth } from "../types";
 import { CategoryButtons } from "./controls/CategoryButtons";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-interface Booth {
-	data: {
-		id: string;
-		label: string;
-		name: string;
-		category: string;
-		shape_type: string;
-	};
-}
+// interface NodePopupData {
+// 	label: string;
+// 	name: string;
+// 	category: string;
+// }
+
+// interface Booth {
+// 	data: {
+// 		id: string;
+// 		label: string;
+// 		name: string;
+// 		category: string;
+// 		shape_type: string;
+// 	};
+// }
 
 interface BoothListProps {
 	isBoothListExpanded: boolean;
