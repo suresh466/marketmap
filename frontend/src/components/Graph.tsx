@@ -45,19 +45,42 @@ export const Graph = ({
 				{
 					selector: "node",
 					style: {
-						"background-color": "#A3B18A",
+						"background-color": (ele) => {
+							return ele.data("shape_type") === "hexagon"
+								? "#DAD7CD"
+								: "#A3B18A";
+						},
 						color: "#000",
-						"border-color": "#000",
+						"border-color": (ele) => {
+							return ele.data("shape_type") === "hexagon" ? "#344E41" : "#000";
+						},
 						label: "data(label)",
 						"text-valign": "center",
 						"text-halign": "center",
-						width: "data(width)",
-						height: "data(height)",
-						"border-width": 5,
+						width: (ele: cytoscape.NodeSingular) => {
+							return ele.data("shape_type") === "hexagon"
+								? ele.data("width") * 1.33
+								: ele.data("width");
+						},
+						height: (ele: cytoscape.NodeSingular) => {
+							return ele.data("shape_type") === "hexagon"
+								? ele.data("height") * 1.33
+								: ele.data("height");
+						},
+						"border-width": (ele) => {
+							return ele.data("shape_type") === "hexagon" ? 8 : 5;
+						},
 						shape: (ele) => {
 							const shape_type = ele.data("shape_type");
-							if (shape_type === "hexagon") return "concave-hexagon";
+							if (shape_type === "hexagon") return "polygon";
 							return ele.data("shape_type") || "rectangle";
+						},
+						"shape-polygon-points": (ele: cytoscape.NodeSingular) => {
+							if (ele.data("shape_type") === "hexagon") {
+								// Gate-like shape with opening in the middle
+								return "-1 -1, -1 1, -0.3 1, -0.3 0.3, 0.3 0.3, 0.3 1, 1 1, 1 -1";
+							}
+							return "-1 -1, 1 -1, 1 1, -1 1"; // Default rectangle points as fallback
 						},
 						visibility: (ele: cytoscape.NodeSingular) =>
 							ele.data("shape_type") === "ellipse" ||
@@ -155,24 +178,24 @@ export const Graph = ({
 			{/* Graph container */}
 			<div
 				ref={containerRef}
-				className="h-full graph-container bg-gray-50/30"
+				className="graph-container h-full bg-gray-50/30"
 			/>
 
 			{/* Node popup */}
 			{popupData && (
-				<div className="absolute z-30 bottom-2 inset-x-4 md:inset-auto md:top-6 md:left-6 md:bottom-4 md:w-1/4 bg-white rounded-lg shadow-lg p-5 border border-gray-100">
+				<div className="absolute inset-x-4 bottom-2 z-30 rounded-lg border border-gray-100 bg-white p-5 shadow-lg md:inset-auto md:bottom-4 md:left-6 md:top-6 md:w-1/4">
 					{/* Close button */}
 					<button
 						type="button"
 						onClick={() => setPopupData(null)}
-						className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg border-2 border-white flex items-center justify-center w-8 h-8 transition-all duration-200 transform active:scale-90 focus:outline-none"
+						className="absolute -right-3 -top-3 flex h-8 w-8 transform items-center justify-center rounded-full border-2 border-white bg-red-500 p-2 text-white shadow-lg transition-all duration-200 hover:bg-red-600 focus:outline-none active:scale-90"
 						aria-label="Close popup"
 					>
 						<FontAwesomeIcon icon={faTimes} className="text-sm" />
 					</button>
 					<div className="space-y-3">
 						{/* Booth name */}
-						<h3 className="font-semibold text-gray-900 text-xl text-center">
+						<h3 className="text-center text-xl font-semibold text-gray-900">
 							{popupData.name} ({popupData.label})
 						</h3>
 
@@ -190,7 +213,7 @@ export const Graph = ({
 							{/* Get here button */}
 							<button
 								type="button"
-								className="w-full mt-3 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+								className="mt-3 w-full rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 								onClick={() => {
 									setPopupData(null);
 									onGetHere(popupData);
@@ -201,7 +224,7 @@ export const Graph = ({
 							{/* I'm Here button */}
 							<button
 								type="button"
-								className="w-full mt-3 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+								className="mt-3 w-full rounded-lg bg-teal-500 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 								onClick={() => {
 									setPopupData(null);
 									onImHere(popupData);
