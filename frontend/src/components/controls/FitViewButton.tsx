@@ -12,22 +12,12 @@ export const FitViewButton = ({ onFitView }: FitViewButtonProps) => {
 		<button
 			type="button"
 			onClick={onFitView}
-			className="
-        px-2 py-1
-        bg-white/90 backdrop-blur-sm
-        hover:bg-white/100
-        text-gray-600 hover:text-gray-800
-        border border-gray-200
-        rounded-lg shadow-lg
-        transition-all duration-200 ease-in-out
-        active:ring-2 active:ring-amber-500 active:ring-offset-2
-        group
-      "
+			className="group rounded-lg border border-gray-200 bg-white/90 px-2 py-1 text-gray-600 shadow-lg backdrop-blur-sm transition-all duration-200 ease-in-out hover:bg-white/100 hover:text-gray-800 active:ring-2 active:ring-amber-500 active:ring-offset-2"
 			aria-label="Fit view"
 		>
 			<FontAwesomeIcon
 				icon={fitIcon}
-				className="w-4 h-4 group-hover:scale-110 transition-transform duration-300"
+				className="h-4 w-4 transition-transform duration-300 group-hover:scale-110"
 			/>
 		</button>
 	);

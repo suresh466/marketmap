@@ -34,14 +34,14 @@ export const ShareButton = ({
 			<button
 				type="button"
 				onClick={handleShare}
-				className="bg-white p-2 rounded-lg shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+				className="rounded-lg bg-white p-2 shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
 				title="Share"
 			>
-				<FontAwesomeIcon icon={faShare} className="w-6 h-6 text-gray-600" />
+				<FontAwesomeIcon icon={faShare} className="h-6 w-6 text-gray-600" />
 			</button>
 
 			{showToast && (
-				<div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg isolation-[isolate] z-50">
+				<div className="isolation-[isolate] fixed left-1/2 top-24 z-50 -translate-x-1/2 transform rounded-lg bg-gray-800 px-4 py-2 text-white">
 					Route copied to clipboard!
 				</div>
 			)}

@@ -91,9 +91,9 @@ function App() {
 	};
 
 	return (
-		<main className="h-screen overflow-hidden relative">
+		<main className="relative h-screen overflow-hidden">
 			{/* Search controls overlay */}
-			<div className="absolute z-20 inset-x-4 top-2 md:inset-auto md:left-6 md:top-6 md:w-1/4">
+			<div className="absolute inset-x-4 top-2 z-20 md:inset-auto md:left-6 md:top-6 md:w-1/4">
 				<BoothList
 					graphReady={graphReady}
 					isBoothListExpanded={isBoothListExpanded}
@@ -118,7 +118,7 @@ function App() {
 			</div>
 			{/* Action buttons */}
 			{/* todo: fix the button not visible with bottom-32 maybe look into safe-area-insets */}
-			<div className="absolute right-8 z-10 flex gap-3 md:top-6 bottom-32 md:bottom-auto">
+			<div className="absolute bottom-32 right-8 z-10 flex gap-3 md:bottom-auto md:top-6">
 				<ShareButton
 					selectedOriginBooth={selectedOriginBooth}
 					selectedDestBooth={selectedDestBooth}

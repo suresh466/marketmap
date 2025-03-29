@@ -174,23 +174,16 @@ export const BoothList = ({
 							window.history.pushState({}, "", "");
 							onBoothListToggle(true);
 						}}
-						className="w-full pl-10 px-4 py-3
-        bg-gray-50
-        border border-gray-200
-        rounded-lg
-        text-gray-700 placeholder-gray-400
-        transition-all duration-200
-        focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
-        focus:bg-white"
+						className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 pl-10 text-gray-700 placeholder-gray-400 transition-all duration-200 focus:border-amber-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
 					/>
 				</div>
 			) : (
 				<div
 					ref={boothListRef}
-					className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden flex flex-col"
+					className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg"
 				>
 					{/* Origin Search Input */}
-					<div className="p-4 border-b border-gray-100">
+					<div className="border-b border-gray-100 p-4">
 						<input
 							ref={originInputRef}
 							type="search"
@@ -201,19 +194,12 @@ export const BoothList = ({
 								onOriginSearchChange(e.target.value);
 							}}
 							onFocus={() => onSearchBoxChange("origin")}
-							className="w-full px-4 py-2.5
-              bg-gray-50
-              border border-gray-200
-              rounded-lg
-              text-gray-700 placeholder-gray-400
-              transition-all duration-200
-              focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
-              focus:bg-white"
+							className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-gray-700 placeholder-gray-400 transition-all duration-200 focus:border-amber-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
 						/>
 					</div>
 
 					{/* Destination Search Input */}
-					<div className="p-4 border-b border-gray-100">
+					<div className="border-b border-gray-100 p-4">
 						<input
 							type="search"
 							placeholder="Search Destination"
@@ -223,19 +209,12 @@ export const BoothList = ({
 								onDestSearchChange(e.target.value);
 							}}
 							onFocus={() => onSearchBoxChange("dest")}
-							className="w-full px-4 py-2.5
-              bg-gray-50
-              border border-gray-200
-              rounded-lg
-              text-gray-700 placeholder-gray-400
-              transition-all duration-200
-              focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500
-              focus:bg-white"
+							className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-gray-700 placeholder-gray-400 transition-all duration-200 focus:border-amber-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
 						/>
 					</div>
 
 					{/* Category filters */}
-					<div className="px-4 py-3 border-b border-gray-100">
+					<div className="border-b border-gray-100 px-4 py-3">
 						<CategoryButtons
 							categories={uniqueCategories}
 							selectedCategory={selectedCategory}
@@ -246,9 +225,9 @@ export const BoothList = ({
 					{/* Booth List */}
 					<div className="max-h-[60vh] overflow-y-auto scroll-smooth">
 						{filteredBooths.length === 0 ? (
-							<div className="flex flex-col items-center justify-center h-full text-gray-500 p-8">
+							<div className="flex h-full flex-col items-center justify-center p-8 text-gray-500">
 								<span className="text-lg">No booths found</span>
-								<span className="text-sm mt-1">Try adjusting your search</span>
+								<span className="mt-1 text-sm">Try adjusting your search</span>
 							</div>
 						) : (
 							<ul className="divide-y divide-gray-100">
@@ -260,15 +239,10 @@ export const BoothList = ({
 										<button
 											type="button"
 											onClick={() => handleBoothClick(booth.data.label)}
-											className={`
-		w-full px-4 py-3 text-left
-		transition-all duration-200
-		hover:bg-amber-50
-		${isSelected(booth.data.label) ? "bg-amber-50" : "bg-white"}
-	`}
+											className={`w-full px-4 py-3 text-left transition-all duration-200 hover:bg-amber-50${isSelected(booth.data.label) ? "bg-amber-50" : "bg-white"}`}
 										>
 											<div
-												className={`font-medium ${
+												className={`font-medium${
 													isSelected(booth.data.label)
 														? "text-amber-900"
 														: "text-gray-900"
@@ -277,7 +251,7 @@ export const BoothList = ({
 												{booth.data.name}
 											</div>
 											<div
-												className={`text-sm ${
+												className={`text-sm${
 													isSelected(booth.data.label)
 														? "text-amber-700"
 														: "text-gray-500"
