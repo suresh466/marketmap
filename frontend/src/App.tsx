@@ -30,7 +30,8 @@ function App() {
 	const [isBoothListExpanded, setIsBoothListExpanded] = useState(false);
 	const [graphReady, setGraphReady] = useState(false);
 	const [graphData, setGraphData] = useState<ElementsDefinition | null>(null);
-	const { cy, initCyRef, highlightPath } = useGraph();
+	const { cy, initCyRef, highlightPath, setLocationMarkers, getNodeIdByLabel } =
+		useGraph();
 	const [activeSearchBox, setActiveSearchBox] = useState<"origin" | "dest">(
 		"origin",
 	);
@@ -49,12 +50,29 @@ function App() {
 	function handleImHere(booth: Booth) {
 		setOriginSearchTerm(booth.data.name);
 		setSelectedOriginBooth(booth.data.label);
+
+		// Update markers
+		setLocationMarkers(
+			booth.data.id, // The current node becomes the origin
+			selectedDestBooth ? getNodeIdByLabel(selectedDestBooth) : null, // Use hook's method directly
+		);
+
+		console.log(`Set origin to:${booth.data.name}(${booth.data.label})`);
 	}
 
 	function handleGetHere(booth: Booth) {
 		setDestSearchTerm(booth.data.name);
 		setSelectedDestBooth(booth.data.label);
+
+		// Update markers
+		setLocationMarkers(
+			selectedOriginBooth ? getNodeIdByLabel(selectedOriginBooth) : null, // Use hook's method directly
+			booth.data.id, // The current node becomes the destination
+		);
+
+		console.log(`Set destination to:${booth.data.name}(${booth.data.label})`);
 	}
+
 	// cleanup url parameters after selected booth initialization
 	useEffect(() => {
 		if (window.location.search) {
@@ -85,11 +103,31 @@ function App() {
 		setSelectedOriginBooth(null);
 		setSelectedDestBooth(null);
 		setActiveSearchBox("origin");
+		setLocationMarkers(null, null);
 	};
 
 	const handleFitView = () => {
 		cy.current?.fit();
 	};
+
+	useEffect(() => {
+		if (!graphReady || !cy.current) return;
+
+		// Restore markers if needed
+		if (selectedOriginBooth || selectedDestBooth) {
+			setLocationMarkers(
+				selectedOriginBooth ? getNodeIdByLabel(selectedOriginBooth) : null,
+				selectedDestBooth ? getNodeIdByLabel(selectedDestBooth) : null,
+			);
+		}
+	}, [
+		graphReady,
+		cy,
+		selectedOriginBooth,
+		selectedDestBooth,
+		getNodeIdByLabel,
+		setLocationMarkers,
+	]);
 
 	return (
 		<main className="relative h-screen overflow-hidden">

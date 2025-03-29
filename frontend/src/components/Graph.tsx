@@ -51,6 +51,7 @@ export const Graph = ({
 							return ele.data("shape_type") === "hexagon" ? "#344E41" : "#000";
 						},
 						label: "data(label)",
+						"z-index": 1,
 						"text-valign": "center",
 						"text-halign": "center",
 						width: (ele: cytoscape.NodeSingular) => {
@@ -73,10 +74,9 @@ export const Graph = ({
 						},
 						"shape-polygon-points": (ele: cytoscape.NodeSingular) => {
 							if (ele.data("shape_type") === "hexagon") {
-								// Gate-like shape with opening in the middle
 								return "-1 -1, -1 1, -0.3 1, -0.3 0.3, 0.3 0.3, 0.3 1, 1 1, 1 -1";
 							}
-							return "-1 -1, 1 -1, 1 1, -1 1"; // Default rectangle points as fallback
+							return "-1 -1, 1 -1, 1 1, -1 1";
 						},
 						visibility: (ele: cytoscape.NodeSingular) =>
 							ele.data("shape_type") === "ellipse" ||
@@ -103,6 +103,44 @@ export const Graph = ({
 						visibility: "visible",
 						"background-color": "#F59E0B",
 						"line-color": "#f00",
+					},
+				},
+				// Add styling for origin marker
+				{
+					selector: ".origin-marker",
+					style: {
+						"border-color": "#ef4444",
+						"border-width": 8,
+						"z-index": 9,
+						label: (ele: cytoscape.NodeSingular) => {
+							return `You are here (${ele.data("label")})`;
+						},
+						"text-valign": "bottom",
+						"text-margin-y": -15,
+						"text-background-padding": 15,
+						"text-background-color": "white",
+						"text-background-opacity": 0.8,
+						"text-background-shape": "roundrectangle",
+						backgroundColor: "#14b8a6",
+					},
+				},
+				// Add styling for destination marker
+				{
+					selector: ".destination-marker",
+					style: {
+						"border-color": "#ef4444",
+						"border-width": 8,
+						"z-index": 9,
+						label: (ele: cytoscape.NodeSingular) => {
+							return `Destination (${ele.data("label")})`;
+						},
+						"text-valign": "top",
+						"text-margin-y": -15,
+						"text-background-padding": 15,
+						"text-background-color": "white",
+						"text-background-opacity": 0.8,
+						"text-background-shape": "roundrectangle",
+						backgroundColor: "#f59e0b",
 					},
 				},
 			],

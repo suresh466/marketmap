@@ -31,5 +31,67 @@ export const useGraph = () => {
 		cyRef.current.getElementById(path[path.length - 1]).addClass("highlighted");
 	}, []);
 
-	return { cy: cyRef, initCyRef, highlightPath };
+	const setLocationMarkers = useCallback(
+		(originId: string | null, destId: string | null) => {
+			if (!cyRef.current) return;
+			console.log("past if not cyref");
+
+			// Clear all existing markers
+			cyRef.current.elements().removeClass("origin-marker destination-marker");
+
+			// Set origin marker
+			if (originId) {
+				console.log("inside origin if origin id");
+				const originNode = cyRef.current.getElementById(originId);
+				if (originNode.length > 0) {
+					originNode.addClass("origin-marker");
+					console.log("marker added");
+				} else {
+					console.warn(`Origin node with ID ${originId} not found`);
+					console.log("marker not added");
+				}
+			}
+
+			// Set destination marker
+			if (destId) {
+				console.log("inside dest if dest id");
+				const destNode = cyRef.current.getElementById(destId);
+				if (destNode.length > 0) {
+					destNode.addClass("destination-marker");
+					console.log("marker added");
+				} else {
+					console.warn(`Destination node with ID ${destId} not found`);
+					console.log("marker not added");
+				}
+			}
+		},
+		[],
+	);
+
+	/**
+	 * Gets a node ID from a booth label
+	 * Used to convert booth labels to node IDs for marker placement
+	 */
+	const getNodeIdByLabel = useCallback((label: string): string | null => {
+		if (!cyRef.current) return null;
+
+		// Find the node with matching label
+		const node = cyRef.current
+			.nodes()
+			.filter((node) => node.data("label") === label);
+		if (node.length > 0) {
+			return node.id();
+		}
+
+		console.warn(`No node found with label: ${label}`);
+		return null;
+	}, []);
+
+	return {
+		cy: cyRef,
+		initCyRef,
+		highlightPath,
+		setLocationMarkers,
+		getNodeIdByLabel,
+	};
 };
