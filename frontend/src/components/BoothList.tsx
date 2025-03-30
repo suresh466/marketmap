@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import type { Booth } from "../types";
+import { logger } from "../utils/logger";
 import { CategoryButtons } from "./controls/CategoryButtons";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons/faSearch";
@@ -63,9 +64,11 @@ export const BoothList = ({
 
 	const handleBoothClick = async (boothLabel: string) => {
 		if (activeSearchBox === "origin") {
+			logger.userAction("selectOriginFromSearch", { boothLabel });
 			onOriginSelect(boothLabel);
 			onOriginSearchChange(boothLabel);
 		} else {
+			logger.userAction("selectDestinationFromSearch", { boothLabel });
 			onDestSelect(boothLabel);
 			onDestSearchChange(boothLabel);
 		}
@@ -147,6 +150,12 @@ export const BoothList = ({
 			)
 				.then((response) => response.json())
 				.then((data) => {
+					logger.navigation("pathFound", {
+						origin: selectedOriginBooth,
+						destination: selectedDestBooth,
+						pathLength: data.path.length,
+					});
+
 					// Only collapse on mobile screens
 					onPathFind(data.path);
 					if (window.matchMedia("(max-width: 767px)").matches) {
@@ -156,6 +165,7 @@ export const BoothList = ({
 				.catch((error) => {
 					if (error.name !== "AbortError") {
 						console.error("Error fetching path:", error);
+						logger.error("pathFindingError", error);
 						onPathFind([]);
 					}
 				});

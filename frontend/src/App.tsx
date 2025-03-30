@@ -1,14 +1,14 @@
+import type { ElementsDefinition } from "cytoscape";
 import { useEffect, useState } from "react";
 import { BoothList } from "./components/BoothList";
 import { Graph } from "./components/Graph";
 import { useGraph } from "./hooks/useGraph";
 import type { Booth } from "./types";
 import "./styles/Graph.css";
-
-import type { ElementsDefinition } from "cytoscape";
 import { FitViewButton } from "./components/controls/FitViewButton";
 import { PathResetButton } from "./components/controls/ResetGraphButton";
 import { ShareButton } from "./components/controls/ShareButton";
+import { logger } from "./utils/logger";
 
 // interface NodePopupData {
 // 	label: string;
@@ -58,6 +58,10 @@ function App() {
 		);
 
 		console.log(`Set origin to:${booth.data.name}(${booth.data.label})`);
+		logger.userAction("clickGetHere", {
+			name: booth.data.name,
+			label: booth.data.label,
+		});
 	}
 
 	function handleGetHere(booth: Booth) {
@@ -71,6 +75,10 @@ function App() {
 		);
 
 		console.log(`Set destination to:${booth.data.name}(${booth.data.label})`);
+		logger.userAction("clickImHere", {
+			name: booth.data.name,
+			label: booth.data.label,
+		});
 	}
 
 	// cleanup url parameters after selected booth initialization
@@ -104,10 +112,12 @@ function App() {
 		setSelectedDestBooth(null);
 		setActiveSearchBox("origin");
 		setLocationMarkers(null, null);
+		logger.userAction("resetPath");
 	};
 
 	const handleFitView = () => {
 		cy.current?.fit();
+		logger.userAction("fitView");
 	};
 
 	useEffect(() => {

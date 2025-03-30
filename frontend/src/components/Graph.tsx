@@ -2,6 +2,7 @@ import cytoscape from "cytoscape";
 import type { ElementsDefinition } from "cytoscape";
 import { useEffect, useRef, useState } from "react";
 import type { Booth } from "../types";
+import { logger } from "../utils/logger";
 
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -182,6 +183,10 @@ export const Graph = ({
 
 		cy.on("tap", "node", (e) => {
 			const node = e.target;
+			logger.userAction("nodeSelected", {
+				id: node.id(),
+				label: node.data("label"),
+			});
 			setBooth({ data: node.data() });
 		});
 
@@ -193,6 +198,8 @@ export const Graph = ({
 
 		initCyRef(cy);
 		cy.ready(() => {
+			const loadTime = performance.now();
+			logger.performance("graphInitialization", loadTime);
 			onGraphReady(true);
 			cy.fit();
 		});
