@@ -34,7 +34,7 @@ class LogEvent(BaseModel):
 
 class AnalyticsBatch(BaseModel):
     events: List[LogEvent]
-    sessionId: Optional[str] = None
+    sessionContext: Optional[Dict[str, Any]] = None
 
 
 # Initialize the database if it doesn't exist
@@ -50,7 +50,8 @@ def init_analytics_db():
             event TEXT,
             data TEXT,
             timestamp TEXT,
-            received_at TEXT
+            received_at TEXT,
+            session_context TEXT
         )
         """)
         conn.commit()
@@ -207,16 +208,25 @@ async def log_analytics_batch(batch: AnalyticsBatch):
         # Use a transaction for better performance
         cursor.execute("BEGIN TRANSACTION")
 
+        # Extract session_id from context if available
+        session_id = "unknown"
+        session_context = "{}"
+
+        if batch.sessionContext:
+            session_context = json.dumps(batch.sessionContext)
+            session_id = batch.sessionContext.get("sessionId", "unknown")
+
         for event in batch.events:
             cursor.execute(
-                "INSERT INTO analytics (session_id, type, event, data, timestamp, received_at) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO analytics (session_id, type, event, data, timestamp, received_at, session_context) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (
-                    batch.sessionId or "unknown",
+                    session_id,
                     event.type,
                     event.event,
                     json.dumps(event.data),
                     event.timestamp,
                     datetime.now().isoformat(),
+                    session_context,
                 ),
             )
 

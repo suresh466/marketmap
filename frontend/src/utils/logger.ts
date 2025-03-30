@@ -1,5 +1,14 @@
 // Session ID to group logs from the same session
-const SESSION_ID = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+// const SESSION_ID = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+
+// Session and user context
+const SESSION_CONTEXT = {
+	sessionId: `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+	screenWidth: window.innerWidth,
+	screenHeight: window.innerHeight,
+	userAgent: navigator.userAgent,
+	timestamp: new Date().toISOString(),
+};
 
 // Configure batching parameters
 const CONFIG = {
@@ -34,7 +43,7 @@ const flushLogs = () => {
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
 			events: batchToSend,
-			sessionId: SESSION_ID,
+			sessionContext: SESSION_CONTEXT,
 		}),
 	}).catch(() => {
 		// Silent fail for analytics
@@ -98,7 +107,7 @@ if (typeof window !== "undefined") {
 				CONFIG.ANALYTICS_ENDPOINT,
 				JSON.stringify({
 					events: logBatch,
-					sessionId: SESSION_ID,
+					sessionContext: SESSION_CONTEXT,
 				}),
 			);
 		} else {
