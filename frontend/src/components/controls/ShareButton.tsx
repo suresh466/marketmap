@@ -2,6 +2,7 @@ import { faShare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import copy from "clipboard-copy";
 import { useState } from "react";
+import { logger } from "../../utils/logger";
 
 interface ShareButtonProps {
 	selectedOriginBooth: string | null;
@@ -22,6 +23,7 @@ export const ShareButton = ({
 
 		try {
 			await copy(url);
+			logger.userAction("shareCopyUrl", { url });
 			setShowToast(true);
 			setTimeout(() => setShowToast(false), 2000);
 		} catch (err) {

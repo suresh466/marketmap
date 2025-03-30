@@ -12,7 +12,7 @@ const SESSION_CONTEXT = {
 
 // Configure batching parameters
 const CONFIG = {
-	BATCH_SIZE: 20,
+	BATCH_SIZE: 10,
 	BATCH_INTERVAL_MS: 30000, // 30 seconds
 	ANALYTICS_ENDPOINT: "/api/analytics/batch",
 };
@@ -45,9 +45,14 @@ const flushLogs = () => {
 			events: batchToSend,
 			sessionContext: SESSION_CONTEXT,
 		}),
-	}).catch(() => {
-		// Silent fail for analytics
-	});
+	})
+		.then(() => {
+			console.log(`Successfully sent ${batchToSend.length} logs to server`);
+		})
+		.catch(() => {
+			console.error("Failed to send logs", batchToSend);
+			// Silent fail for analytics
+		});
 };
 
 // Log event and add to batch
@@ -103,14 +108,28 @@ if (typeof window !== "undefined") {
 
 		// Use sendBeacon for more reliable delivery during page unload
 		if (navigator.sendBeacon && logBatch.length > 0) {
-			navigator.sendBeacon(
-				CONFIG.ANALYTICS_ENDPOINT,
-				JSON.stringify({
-					events: logBatch,
-					sessionContext: SESSION_CONTEXT,
-				}),
+			console.log(
+				`Attempting to send ${logBatch.length} logs via sendBeacon before page unload`,
 			);
+			const data = JSON.stringify({
+				events: logBatch,
+				sessionContext: SESSION_CONTEXT,
+			});
+
+			const success = navigator.sendBeacon(CONFIG.ANALYTICS_ENDPOINT, data);
+
+			if (success) {
+				console.log(
+					`Successfully queued ${logBatch.length} logs via sendBeacon`,
+				);
+			} else {
+				console.error("sendBeacon failed, falling back to fetch");
+				flushLogs();
+			}
 		} else {
+			console.log(
+				`sendBeacon not available, using fetch to send ${logBatch.length} logs`,
+			);
 			flushLogs();
 		}
 	});
