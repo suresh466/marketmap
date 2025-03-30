@@ -15,11 +15,23 @@ FILE = "flea_market.graphml"
 app = FastAPI()
 
 
-# Create log directory structure if it doesn't exist
-log_dir = Path("/var/log/marketmap")
-log_dir.mkdir(parents=True, exist_ok=True)
+# Determine the log directory
+def get_log_directory():
+    # First try to use user's home directory
+    try:
+        home_dir = Path.home()
+        log_dir = home_dir / ".marketmap" / "logs"
+        log_dir.mkdir(parents=True, exist_ok=True)
+        return log_dir
+    except Exception:
+        # Fall back to current directory if home is not available
+        fallback_dir = Path(".") / "logs"
+        fallback_dir.mkdir(exist_ok=True)
+        return fallback_dir
 
-# SQLite setup for analytics
+
+# Get log directory and create db path
+log_dir = get_log_directory()
 db_path = log_dir / "analytics.db"
 db_exists = db_path.exists()
 
