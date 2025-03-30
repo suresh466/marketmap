@@ -209,8 +209,23 @@ export const BoothList = ({
 							onChange={(e) => {
 								if (e.target.value === "") onOriginSelect(null);
 								onOriginSearchChange(e.target.value);
+
+								// Simple debounce using closure and DOM value
+								const currentValue = e.target.value;
+								const inputElement = e.target;
+								if (currentValue && currentValue.length > 2) {
+									setTimeout(() => {
+										// Compare with the actual DOM element value
+										if (currentValue === inputElement.value) {
+											logger.userAction("searchOrigin", { term: currentValue });
+										}
+									}, 500);
+								}
 							}}
-							onFocus={() => onSearchBoxChange("origin")}
+							onFocus={() => {
+								onSearchBoxChange("origin");
+								logger.userAction("focusOriginSearch");
+							}}
 							className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-gray-700 placeholder-gray-400 transition-all duration-200 focus:border-amber-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
 						/>
 					</div>
@@ -224,8 +239,23 @@ export const BoothList = ({
 							onChange={(e) => {
 								if (e.target.value === "") onDestSelect(null);
 								onDestSearchChange(e.target.value);
+
+								// Simple debounce using closure and DOM value
+								const currentValue = e.target.value;
+								const inputElement = e.target;
+								if (currentValue && currentValue.length >= 2) {
+									setTimeout(() => {
+										// Compare with the actual DOM element value
+										if (currentValue === inputElement.value) {
+											logger.userAction("searchDest", { term: currentValue });
+										}
+									}, 500);
+								}
 							}}
-							onFocus={() => onSearchBoxChange("dest")}
+							onFocus={() => {
+								onSearchBoxChange("dest");
+								logger.userAction("focusDestinationSearch");
+							}}
 							className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-gray-700 placeholder-gray-400 transition-all duration-200 focus:border-amber-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/50"
 						/>
 					</div>
@@ -235,7 +265,10 @@ export const BoothList = ({
 						<CategoryButtons
 							categories={uniqueCategories}
 							selectedCategory={selectedCategory}
-							onCategoryChange={setSelectedCategory}
+							onCategoryChange={(category) => {
+								setSelectedCategory(category);
+								logger.userAction("selectCategory", { category });
+							}}
 						/>
 					</div>
 
