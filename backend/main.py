@@ -1,13 +1,64 @@
+import json
+import sqlite3
 import xml.etree.ElementTree as ET
-from typing import Dict, List
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 import networkx as nx
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
 
 FILE = "flea_market.graphml"
 
 app = FastAPI()
+
+
+# Create log directory structure if it doesn't exist
+log_dir = Path("/var/log/marketmap")
+log_dir.mkdir(parents=True, exist_ok=True)
+
+# SQLite setup for analytics
+db_path = log_dir / "analytics.db"
+db_exists = db_path.exists()
+
+
+# Define models for the analytics endpoint
+class LogEvent(BaseModel):
+    type: str
+    event: str
+    data: Dict[str, Any]
+    timestamp: str
+
+
+class AnalyticsBatch(BaseModel):
+    events: List[LogEvent]
+    sessionId: Optional[str] = None
+
+
+# Initialize the database if it doesn't exist
+def init_analytics_db():
+    if not db_exists:
+        conn = sqlite3.connect(str(db_path))
+        cursor = conn.cursor()
+        cursor.execute("""
+        CREATE TABLE analytics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            type TEXT,
+            event TEXT,
+            data TEXT,
+            timestamp TEXT,
+            received_at TEXT
+        )
+        """)
+        conn.commit()
+        conn.close()
+
+
+# Initialize DB on startup
+init_analytics_db()
 
 
 def prepare_graph(file_path: str):
@@ -144,6 +195,42 @@ def load_booths(file_path: str) -> List:
         return booths
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/analytics/batch")
+async def log_analytics_batch(batch: AnalyticsBatch):
+    """Endpoint to receive batched analytics logs from frontend"""
+    conn = sqlite3.connect(str(db_path))
+    cursor = conn.cursor()
+
+    try:
+        # Use a transaction for better performance
+        cursor.execute("BEGIN TRANSACTION")
+
+        for event in batch.events:
+            cursor.execute(
+                "INSERT INTO analytics (session_id, type, event, data, timestamp, received_at) VALUES (?, ?, ?, ?, ?, ?)",
+                (
+                    batch.sessionId or "unknown",
+                    event.type,
+                    event.event,
+                    json.dumps(event.data),
+                    event.timestamp,
+                    datetime.now().isoformat(),
+                ),
+            )
+
+        cursor.execute("COMMIT")
+        return {"success": True, "count": len(batch.events)}
+
+    except Exception as e:
+        cursor.execute("ROLLBACK")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to store analytics: {str(e)}"
+        )
+
+    finally:
+        conn.close()
 
 
 @app.get("/")
