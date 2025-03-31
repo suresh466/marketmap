@@ -148,7 +148,11 @@ function App() {
 					isBoothListExpanded={isBoothListExpanded}
 					booths={
 						(graphData?.nodes.filter(
-							(node) => node.data?.name && node.data.name !== "booth",
+							(node) =>
+								node.data?.name &&
+								node.data?.extension &&
+								node.data.name !== "booth" &&
+								node.data.extension === "0",
 						) as Booth[]) ?? null
 					}
 					originSearchTerm={originSearchTerm}

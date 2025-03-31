@@ -19,5 +19,7 @@ export interface Booth {
 		shape_type: string;
 		width?: number;
 		height?: number;
+		status: string;
+		extension: string;
 	};
 }

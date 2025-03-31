@@ -169,6 +169,7 @@ def load_graphml_to_cytoscape(file_path: str) -> Dict:
                     "shape_type": node[1].get("shape_type", "rhomboid"),
                     "name": node[1].get("name", "no_name"),
                     "category": node[1].get("category", "no_cat").lower(),
+                    "extension": node[1].get("extension", "no_ext").lower(),
                 },
                 "position": {"x": center_x, "y": center_y},
                 "pannable": "true",
