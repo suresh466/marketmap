@@ -62,15 +62,20 @@ export const BoothList = ({
 	const originInputRef = useRef<HTMLInputElement>(null);
 	const boothListRef = useRef<HTMLDivElement>(null);
 
-	const handleBoothClick = async (boothLabel: string) => {
+	const handleBoothClick = async (booth: Booth) => {
+		const displayName = `${booth.data.name} (${booth.data.label})`;
 		if (activeSearchBox === "origin") {
-			logger.userAction("selectOriginFromSearch", { boothLabel });
-			onOriginSelect(boothLabel);
-			onOriginSearchChange(boothLabel);
+			logger.userAction("selectOriginFromSearch", {
+				loggerDetails: displayName,
+			});
+			onOriginSelect(booth.data.label);
+			onOriginSearchChange(displayName);
 		} else {
-			logger.userAction("selectDestinationFromSearch", { boothLabel });
-			onDestSelect(boothLabel);
-			onDestSearchChange(boothLabel);
+			logger.userAction("selectDestinationFromSearch", {
+				loggerDetails: displayName,
+			});
+			onDestSelect(booth.data.label);
+			onDestSearchChange(displayName);
 		}
 	};
 
@@ -288,7 +293,7 @@ export const BoothList = ({
 									>
 										<button
 											type="button"
-											onClick={() => handleBoothClick(booth.data.label)}
+											onClick={() => handleBoothClick(booth)}
 											className={`w-full px-4 py-3 text-left transition-all duration-200 hover:bg-amber-50${isSelected(booth.data.label) ? "bg-amber-50" : "bg-white"}`}
 										>
 											<div
