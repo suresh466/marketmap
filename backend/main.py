@@ -11,8 +11,30 @@ from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
 FILE = "flea_market.graphml"
+# Global caches
+_prepared_graph_cache = None  # NetworkX graph
+_cytoscape_elements_cache = None  # Cytoscape format
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Preload graph data on app startup"""
+    global _prepared_graph_cache, _cytoscape_elements_cache
+
+    try:
+        print("Preloading graph data...")
+        # Load and prepare the NetworkX graph
+        _prepared_graph_cache = prepare_graph(FILE)
+
+        # Convert to Cytoscape format for the /api/graph endpoint
+        graph_data = load_graphml_to_cytoscape(FILE)
+        _cytoscape_elements_cache = graph_data
+
+        print("Graph data preloaded successfully!")
+    except Exception as e:
+        print(f"WARNING: Failed to preload graph data: {e}")
 
 
 # Determine the log directory
@@ -284,7 +306,14 @@ async def get_index():
 @app.get("/api/graph")
 async def get_graph():
     """API endpoint to get the graph data"""
+    global _cytoscape_elements_cache
+
     try:
+        # Return cached data if available
+        if _cytoscape_elements_cache is not None:
+            return _cytoscape_elements_cache
+
+        # Fallback to loading fresh data
         graph_data = load_graphml_to_cytoscape(FILE)
         return graph_data
     except Exception as e:
@@ -303,7 +332,13 @@ async def get_booths():
 
 @app.get("/api/shortest-path/-/{start_label:path}/-/{end_label:path}")
 async def get_shortest_path(start_label: str, end_label: str):
-    G = prepare_graph(FILE)
+    global _prepared_graph_cache
+
+    # Use cached graph if available
+    if _prepared_graph_cache is not None:
+        G = _prepared_graph_cache
+    else:
+        G = prepare_graph(FILE)
 
     start_node = find_node_by_label(G, start_label)
     end_node = find_node_by_label(G, end_label)
