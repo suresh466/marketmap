@@ -109,6 +109,23 @@ def apply_default_attributes(G):
     node_default = G.graph["node_default"]
     edge_default = G.graph["edge_default"]
 
+    # Find rectangular(booths) nodes connected to multiple nodes
+    # some are acceptable in specific cases, but not in general
+    # rectangle_connections = {}
+    # for node, attrs in G.nodes(data=True):
+    #     if attrs.get("shape_type") == "rectangle":
+    #         rectangle_connections[node] = set()
+    #         for neighbor in G.neighbors(node):
+    #             neighbor_type = G.nodes[neighbor].get("shape_type", "unknown")
+    #             rectangle_connections[node].add(neighbor_type)
+    #
+    # for node, types in rectangle_connections.items():
+    #     if len(types) > 1:
+    #         node_label = G.nodes[node].get("label", "unknown")
+    #         print(
+    #             f"Rectangle node {node_label} is connected to multiple node types: {', '.join(types)}"
+    #         )
+
     # Find all pairs of nodes with multiple edges
     multi_edges = []
     for u, v in G.edges():
