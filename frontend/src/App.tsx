@@ -144,6 +144,7 @@ function App() {
 			{/* Search controls overlay */}
 			<div className="absolute inset-x-4 top-2 z-20 md:inset-auto md:left-6 md:top-6 md:w-1/4">
 				<BoothList
+					cy={cy}
 					graphReady={graphReady}
 					isBoothListExpanded={isBoothListExpanded}
 					booths={

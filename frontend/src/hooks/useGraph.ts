@@ -26,9 +26,27 @@ export const useGraph = () => {
 
 			(edge.length ? edge : reverseEdge).addClass("highlighted");
 		}
-		// highlight first and the last node
-		cyRef.current.getElementById(path[0]).addClass("highlighted");
-		cyRef.current.getElementById(path[path.length - 1]).addClass("highlighted");
+		// Only fit if the path nodes aren't all in the current viewport
+		const extent = cyRef.current.extent();
+		const anyNodeOutsideViewport = path.some((id) => {
+			const node = cyRef.current?.getElementById(id);
+			// Guard against null/undefined node
+			if (!node) {
+				console.warn(`Node with ID ${id} not found`);
+				return false;
+			}
+			const bb = node.boundingBox();
+			const isOutside =
+				bb.x1 < extent.x1 ||
+				bb.x2 > extent.x2 ||
+				bb.y1 < extent.y1 ||
+				bb.y2 > extent.y2;
+			return isOutside;
+		});
+
+		if (anyNodeOutsideViewport) {
+			cyRef.current.fit();
+		}
 	}, []);
 
 	const setLocationMarkers = useCallback(

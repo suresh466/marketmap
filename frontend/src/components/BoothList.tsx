@@ -24,6 +24,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // }
 
 interface BoothListProps {
+	cy: React.MutableRefObject<cytoscape.Core | null>;
 	isBoothListExpanded: boolean;
 	booths: Booth[] | null;
 	graphReady: boolean;
@@ -42,6 +43,7 @@ interface BoothListProps {
 }
 
 export const BoothList = ({
+	cy,
 	isBoothListExpanded,
 	booths,
 	graphReady,
@@ -76,6 +78,29 @@ export const BoothList = ({
 			});
 			onDestSelect(booth.data.label);
 			onDestSearchChange(displayName);
+		}
+
+		if (!(selectedOriginBooth && selectedDestBooth)) {
+			if (!cy.current) return;
+
+			// Only fit if the path nodes aren't all in the current viewport
+			const extent = cy.current.extent();
+			const current_booth = cy.current.getElementById(booth.data.id);
+			// Guard against null/undefined node
+			if (!current_booth) {
+				console.warn(`Node with ID ${booth.data.id} not found`);
+			}
+
+			const bb = cy.current.getElementById(booth.data.id).boundingBox();
+			const isOutside =
+				bb.x1 < extent.x1 ||
+				bb.x2 > extent.x2 ||
+				bb.y1 < extent.y1 ||
+				bb.y2 > extent.y2;
+
+			if (isOutside) {
+				cy.current.fit();
+			}
 		}
 	};
 
