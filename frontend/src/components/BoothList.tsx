@@ -62,6 +62,7 @@ export const BoothList = ({
 }: BoothListProps) => {
 	const [selectedCategory, setSelectedCategory] = useState<string>("all");
 	const originInputRef = useRef<HTMLInputElement>(null);
+	const destInputRef = useRef<HTMLInputElement>(null);
 	const boothListRef = useRef<HTMLDivElement>(null);
 
 	const handleBoothClick = async (booth: Booth) => {
@@ -72,12 +73,20 @@ export const BoothList = ({
 			});
 			onOriginSelect(booth.data.label);
 			onOriginSearchChange(displayName);
+			if (!selectedDestBooth) {
+				onSearchBoxChange("dest");
+				destInputRef.current?.focus();
+			}
 		} else {
 			logger.userAction("selectDestinationFromSearch", {
 				loggerDetails: displayName,
 			});
 			onDestSelect(booth.data.label);
 			onDestSearchChange(displayName);
+			if (!selectedOriginBooth) {
+				onSearchBoxChange("origin");
+				originInputRef.current?.focus();
+			}
 		}
 
 		if (!(selectedOriginBooth && selectedDestBooth)) {
@@ -186,11 +195,8 @@ export const BoothList = ({
 						pathLength: data.path.length,
 					});
 
-					// Only collapse on mobile screens
 					onPathFind(data.path);
-					if (window.matchMedia("(max-width: 767px)").matches) {
-						if (isBoothListExpanded) window.history.back();
-					}
+					if (isBoothListExpanded) window.history.back();
 				})
 				.catch((error) => {
 					if (error.name !== "AbortError") {
@@ -263,6 +269,7 @@ export const BoothList = ({
 					{/* Destination Search Input */}
 					<div className="border-b border-gray-100 p-4">
 						<input
+							ref={destInputRef}
 							type="search"
 							placeholder="Search Destination"
 							value={destSearchTerm}
