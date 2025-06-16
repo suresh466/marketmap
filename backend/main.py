@@ -42,7 +42,7 @@ def get_log_directory():
     # First try to use user's home directory
     try:
         home_dir = Path.home()
-        log_dir = home_dir / ".marketmap" / "logs"
+        log_dir = home_dir / "marketmap" / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
         return log_dir
     except Exception:
