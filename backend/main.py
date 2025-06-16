@@ -10,12 +10,26 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
+
 FILE = "flea_market.graphml"
 # Global caches
 _prepared_graph_cache = None  # NetworkX graph
 _cytoscape_elements_cache = None  # Cytoscape format
 
 app = FastAPI()
+
+
+# Define models for the analytics endpoint
+class LogEvent(BaseModel):
+    type: str
+    event: str
+    data: Dict[str, Any]
+    timestamp: str
+
+
+class AnalyticsBatch(BaseModel):
+    events: List[LogEvent]
+    sessionContext: Optional[Dict[str, Any]] = None
 
 
 @app.on_event("startup")
@@ -56,19 +70,6 @@ def get_log_directory():
 log_dir = get_log_directory()
 db_path = log_dir / "analytics.db"
 db_exists = db_path.exists()
-
-
-# Define models for the analytics endpoint
-class LogEvent(BaseModel):
-    type: str
-    event: str
-    data: Dict[str, Any]
-    timestamp: str
-
-
-class AnalyticsBatch(BaseModel):
-    events: List[LogEvent]
-    sessionContext: Optional[Dict[str, Any]] = None
 
 
 # Initialize the database if it doesn't exist

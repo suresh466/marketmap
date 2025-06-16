@@ -26,7 +26,7 @@ let logBatch: Array<{
 }> = [];
 
 // Setup batch sending interval
-const batchInterval = setInterval(() => {
+const batchIntervalId = setInterval(() => {
 	flushLogs();
 }, CONFIG.BATCH_INTERVAL_MS);
 
@@ -38,6 +38,7 @@ const flushLogs = () => {
 	const batchToSend = [...logBatch];
 	logBatch = [];
 
+	console.log(batchToSend);
 	fetch(CONFIG.ANALYTICS_ENDPOINT, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
@@ -46,8 +47,12 @@ const flushLogs = () => {
 			sessionContext: SESSION_CONTEXT,
 		}),
 	})
-		.then(() => {
-			console.log(`Successfully sent ${batchToSend.length} logs to server`);
+		.then((response) => {
+			if (!response.ok) {
+				console.error(`Something went wrong when sendingn logs ${response}`);
+			} else {
+				console.log(`Successfully sent ${batchToSend.length} logs to server`);
+			}
 		})
 		.catch(() => {
 			console.error("Failed to send logs", batchToSend);
@@ -83,8 +88,8 @@ export const logger = {
 	},
 
 	// Track performance metrics
-	performance: (operation: string, timeMs: number) => {
-		logEvent("performance", operation, { timeMs });
+	performance: (operation: string, timeMs: Record<string, number>) => {
+		logEvent("performance", operation, timeMs);
 	},
 
 	// Track errors
@@ -104,7 +109,7 @@ export const logger = {
 // Send remaining logs when page is closed
 if (typeof window !== "undefined") {
 	window.addEventListener("beforeunload", () => {
-		clearInterval(batchInterval);
+		clearInterval(batchIntervalId);
 
 		// Use sendBeacon for more reliable delivery during page unload
 		if (navigator.sendBeacon && logBatch.length > 0) {
@@ -116,7 +121,9 @@ if (typeof window !== "undefined") {
 				sessionContext: SESSION_CONTEXT,
 			});
 
-			const success = navigator.sendBeacon(CONFIG.ANALYTICS_ENDPOINT, data);
+			const blob = new Blob([data], { type: "application/json" });
+
+			const success = navigator.sendBeacon(CONFIG.ANALYTICS_ENDPOINT, blob);
 
 			if (success) {
 				console.log(

@@ -199,7 +199,7 @@ export const Graph = ({
 		initCyRef(cy);
 		cy.ready(() => {
 			const loadTime = performance.now();
-			logger.performance("graphInitialization", loadTime);
+			logger.performance("graphInitialization", { loadTime });
 			onGraphReady(true);
 			cy.fit();
 		});
