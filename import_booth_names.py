@@ -40,6 +40,18 @@ def update_booth_names(graphml_file, csv_file, output_file):
         print(f"Error parsing GraphML file: {e}", file=sys.stderr)
         return False
 
+    # Clear all existing booth names and extensions
+    for node in tree.findall("//node", nsmap):
+        # Clear booth name (d4)
+        name_elem = node.find('./data[@key="d4"]', nsmap)
+        if name_elem is not None:
+            name_elem.text = "booth"
+
+        # Clear extension info (d10)
+        ext_elem = node.find('./data[@key="d10"]', nsmap)
+        if ext_elem is not None:
+            ext_elem.text = "0"
+
     # Step b: Create mapping from CSV
     label_to_name = {}
     label_to_extension = {}  # Track extension number for each label

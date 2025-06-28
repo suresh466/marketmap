@@ -1,6 +1,3 @@
-// Session ID to group logs from the same session
-// const SESSION_ID = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-
 // Session and user context
 const SESSION_CONTEXT = {
 	sessionId: `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
