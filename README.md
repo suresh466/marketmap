@@ -2,33 +2,23 @@
 
 Indoor mapping and navigation system designed for flea markets
 
-## Development
+## 📦 Getting Started
 
-### Test server with Docker + Nginx
+### Using docker
 
-```bash
-docker compose -p marketmap-dev -f docker-compose.yml -f docker-compose-dev.yml up --watch
-```
+1. **Clone the repository**:
 
-Runs the app inside a Docker container behind Nginx. Use this to test Nginx config (SSL, headers, cache etc.)
+   ```bash
+   git clone https://github.com/suresh466/marketmap.git && cd marketmap
+   ```
 
-The `-p` flag namespaces the dev container and `--watch` flag automatically syncs file changes and restarts services when configuration files are modified.
+1. **Start with Docker Compose**:
 
-Run the development server without Docker:
+   ```bash
+   docker compose --env-file env.dev up
+   ```
 
-### Production
-
-```bash
-docker compose up -d
-```
-
-Build and run the application in detached mode with production optimizations enabled.
-
-## Notes
-
-- Test certificates are located in `testcerts/`
-- Nginx configuration files are in `nginx-snippets/` and `nginx.conf`
-- Logs are persisted in the `nginx_logs` volume
+The application will be available at `http://localhost:5173`
 
 ## Todo
 
