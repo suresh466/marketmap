@@ -24,8 +24,10 @@ http://localhost {
 	}
 
 	# SPA Routing: Try file, then directory, then index.html
-	try_files {path} {path}/ /index.html
-	file_server
+	handle {
+		try_files {path} {path}/ /index.html
+		file_server
+	}
 
 	# Proxy all other requests to uvicorn
 	handle {

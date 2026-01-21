@@ -22,4 +22,4 @@ FROM caddy:alpine
 EXPOSE 80
 EXPOSE 443
 COPY --from=build-env /app/dist /srv/dist
-COPY Caddyfile /etc/caddy/Caddyfile
+COPY ./Caddyfile /etc/caddy/Caddyfile

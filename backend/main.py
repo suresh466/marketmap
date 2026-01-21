@@ -296,14 +296,6 @@ async def log_analytics_batch(batch: AnalyticsBatch):
         conn.close()
 
 
-@app.get("/")
-async def get_index():
-    """Serve the main HTML page"""
-    with open("static/index.html") as f:
-        html_content = f.read()
-    return HTMLResponse(content=html_content)
-
-
 @app.get("/api/graph")
 async def get_graph():
     """API endpoint to get the graph data"""
